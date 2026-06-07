@@ -617,6 +617,23 @@
     </div>
   </div>
 
+  <!-- ================= CUSTOM CONFIRM DIALOG MODAL ================= -->
+  <div id="confirmModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm hidden px-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 text-center">
+      <div class="w-12 h-12 rounded-full bg-rose-50 dark:bg-rose-950/30 text-rose-500 flex items-center justify-center mx-auto animate-pulse">
+        <span class="material-symbols-rounded text-2xl">warning</span>
+      </div>
+      <div class="space-y-1">
+        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-base" id="confirmModalTitle">ยืนยันการดำเนินการ</h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" id="confirmModalMessage">คุณแน่ใจว่าต้องการทำรายการนี้หรือไม่?</p>
+      </div>
+      <div class="flex gap-2 pt-2">
+        <button onclick="closeConfirmModal(false)" class="flex-1 py-2.5 border border-slate-200 dark:border-slate-800 text-xs font-bold rounded-xl btn-smooth text-slate-500">ยกเลิก</button>
+        <button onclick="closeConfirmModal(true)" class="flex-1 py-2.5 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl btn-smooth">ตกลง</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ================= CONFIG & GLOBALS =================
     // ลิงก์เชื่อมโยงไปยัง Google Apps Script
@@ -633,6 +650,7 @@
     let modalAction = 'add'; // 'add' | 'remove'
     let weeklyChartInstance = null;
     let manualThemeOverride = false; // สำหรับป้องกัน auto switch เมื่อผู้ใช้ตั้งใจสลับเอง
+    let confirmPromiseResolver = null; // สำหรับ Custom Confirm Modal
 
     // ตัวแปรสำหรับคีย์ล็อกแอป (PIN System)
     let currentPinInput = "";
@@ -765,7 +783,6 @@
         showToast("ยินดีต้อนรับเข้าสู่ระบบ Finsave", true);
       } else {
         showToast("รหัส PIN ไม่ถูกต้อง กรุณาลองใหม่", false);
-        // สั่นกระดิกบอกว่าผิด
         clearPin();
       }
     }
@@ -786,7 +803,6 @@
         return;
       }
 
-      // ตรวจสอบเงื่อนไขเปลี่ยนได้วันละ 1 ครั้ง
       const todayStr = new Date().toDateString();
       const lastChanged = localStorage.getItem('finsave_pin_last_changed');
 
@@ -800,6 +816,25 @@
       localStorage.setItem('finsave_pin_last_changed', todayStr);
       showToast("เปลี่ยนรหัส PIN เรียบร้อยแล้ว", true);
       closeChangePinModal();
+    }
+
+    // ================= CUSTOM CONFIRM DIALOG SYSTEM =================
+    function showCustomConfirm(title, message) {
+      document.getElementById('confirmModalTitle').innerText = title;
+      document.getElementById('confirmModalMessage').innerText = message;
+      document.getElementById('confirmModal').classList.remove('hidden');
+      
+      return new Promise((resolve) => {
+        confirmPromiseResolver = resolve;
+      });
+    }
+
+    function closeConfirmModal(result) {
+      document.getElementById('confirmModal').classList.add('hidden');
+      if (confirmPromiseResolver) {
+        confirmPromiseResolver(result);
+        confirmPromiseResolver = null;
+      }
     }
 
     // ================= ROUTING & LOADERS =================
@@ -945,8 +980,11 @@
       ];
     }
 
-    function sendDataToServer(action, payload) {
-      showLoading(true, "กำลังส่งข้อมูลเข้าฐานข้อมูล...");
+    // ฟังก์ชันส่งค่าไปเซิร์ฟเวอร์แบบระบุได้ว่าจะทำงานแบบ "เงียบ" หรือแสดง Loading หน้าจอค้าง
+    function sendDataToServer(action, payload, silent = false) {
+      if (!silent) {
+        showLoading(true, "กำลังส่งข้อมูลเข้าฐานข้อมูล...");
+      }
       
       const formData = new URLSearchParams();
       formData.append('action', action);
@@ -968,6 +1006,11 @@
           return result;
         } else {
           throw new Error(result.message || 'บันทึกไม่สำเร็จ');
+        }
+      })
+      .finally(() => {
+        if (!silent) {
+          showLoading(false);
         }
       });
     }
@@ -1083,8 +1126,8 @@
       document.getElementById('transactionForm').reset();
       switchPage('dashboard');
 
-      // ส่งคำสั่งแบบเบื้องหลังไปยังคลาวด์
-      sendDataToServer('addSavings', newTransaction)
+      // ส่งคำสั่งแบบเงียบ (silent = true) เบื้องหลัง ไม่ขัดจังหวะผู้ใช้
+      sendDataToServer('addSavings', newTransaction, true)
         .then(() => {
           showToast(activeSaveTab === 'income' ? "บันทึกออมเงินสำเร็จ!" : "บันทึกรายจ่ายสำเร็จ!", true);
         })
@@ -1094,19 +1137,22 @@
         });
     }
 
-    // ลบรายการออมหรือรายจ่าย (Instant UI Update)
-    function deleteTransaction(id) {
-      if (!confirm("คุณแน่ใจว่าต้องการลบรายการนี้ใช่หรือไม่?")) return;
+    // ลบรายการออมหรือรายจ่าย (Instant UI Update - ไร้ป๊อปอัพบราวเซอร์และไร้ Loading ค้าง)
+    async function deleteTransaction(id) {
+      const confirmed = await showCustomConfirm(
+        "ยืนยันการลบธุรกรรม", 
+        "คุณแน่ใจว่าต้องการลบรายการนี้ใช่หรือไม่? ยอดเงินสะสมจะถูกคำนวณและปรับเปลี่ยนโดยทันที"
+      );
+      if (!confirmed) return;
 
-      // ลบจาก State ทันทีเพื่อความลื่นไหลระดับสูง (ลบแบบรวดเร็ว)
-      const deletedItem = appState.savings.find(t => t.id === id);
+      // ลบจาก State ทันทีเพื่อความลื่นไหลระดับสูงสุด (ลบแบบรวดเร็วทันใจ)
       appState.savings = appState.savings.filter(t => t.id !== id);
       localStorage.setItem('finsave_backup', JSON.stringify(appState));
       updateUIRender();
-      showToast("ลบรายการประวัติธุรกรรมเรียบร้อย", true);
+      showToast("ลบรายการธุรกรรมเรียบร้อยแล้ว", true);
 
-      // ค่อยส่งไปลบที่คลาวด์เพื่อป้องกันความล่าช้าใน UI
-      sendDataToServer('deleteSavings', { id })
+      // ค่อยส่งไปลบที่คลาวด์แบบเงียบๆ เบื้องหลัง (silent = true) โดยไม่เปิด loader บังแอป
+      sendDataToServer('deleteSavings', { id }, true)
         .catch(err => {
           console.warn("ลบธุรกรรมจากเซิร์ฟเวอร์ขัดข้อง แต่ลบในเครื่องเรียบร้อยแล้ว", err);
         });
@@ -1306,21 +1352,27 @@
       document.getElementById('goalName').value = "";
       document.getElementById('goalTarget').value = "";
 
-      sendDataToServer('addGoal', newGoal)
+      // บันทึกเป้าหมายขึ้นเซิร์ฟเวอร์แบบเงียบๆ ด้านหลัง
+      sendDataToServer('addGoal', newGoal, true)
         .catch(() => {
           console.warn("เซิร์ฟเวอร์ยังไม่ได้รับข้อมูลเป้าหมาย แต่บันทึกไว้ในเครื่องแล้ว");
         });
     }
 
-    function deleteGoal(id) {
-      if (!confirm("คุณต้องการลบเป้าหมายนี้ใช่หรือไม่?")) return;
+    async function deleteGoal(id) {
+      const confirmed = await showCustomConfirm(
+        "ยืนยันการลบเป้าหมาย", 
+        "คุณต้องการลบเป้าหมายการออมเงินรายการนี้ใช่หรือไม่?"
+      );
+      if (!confirmed) return;
 
       appState.goals = appState.goals.filter(g => g.id !== id);
       localStorage.setItem('finsave_backup', JSON.stringify(appState));
       updateUIRender();
       showToast("ลบเป้าหมายเรียบร้อยแล้ว", true);
 
-      sendDataToServer('deleteGoal', { id })
+      // ส่งคำสั่งลบเป้าหมายแบบเบื้องหลังไม่บังจอ (silent = true)
+      sendDataToServer('deleteGoal', { id }, true)
         .catch(() => {
           console.warn("ไม่สามารถลบที่เซอร์เวอร์ได้ทันที แต่แก้ไขในเครื่องสำเร็จ");
         });
@@ -1398,7 +1450,8 @@
         showToast("ปรับปรุงยอดเป้าหมายเรียบร้อย", true);
       }
 
-      sendDataToServer('updateGoal', updatedPayload)
+      // บันทึกยอดสะสมเป้าหมายแบบเงียบด้านหลัง
+      sendDataToServer('updateGoal', updatedPayload, true)
         .catch(() => {
           console.warn("การปรับยอดบนคลาวด์ยังไม่เรียบร้อย ข้อมูลยังคงอยู่ในอุปกรณ์นี้");
         });
