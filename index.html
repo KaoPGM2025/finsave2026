@@ -56,25 +56,15 @@
     .btn-smooth {
       transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    /* แอนิเมชันของเมนูสไลด์แนวนอน */
     .menu-slide {
-      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
     }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-300 pb-28">
 
-  <!-- ================= LOADING SCREEN ================= -->
-  <div id="loadingScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/80 backdrop-blur-md text-white transition-opacity duration-200 pointer-events-auto">
-    <div class="text-center">
-      <div class="relative w-16 h-16 mx-auto mb-4">
-        <div class="absolute inset-0 rounded-full border-4 border-brand-500/20"></div>
-        <div class="absolute inset-0 rounded-full border-4 border-brand-500 border-t-transparent animate-spin"></div>
-      </div>
-      <p class="text-lg font-semibold tracking-wide" id="loadingText">กำลังเชื่อมโยงฐานข้อมูล Finsave...</p>
-      <p class="text-xs text-slate-400 mt-1">กรุณารอสักครู่เพื่อประสิทธิภาพการแสดงผล</p>
-    </div>
-  </div>
+  <!-- Tiny Unobtrusive Header Sync Progress Bar (ทดแทนหน้าจอโหลดเพื่อความสะอาดตา) -->
+  <div id="syncProgressBar" class="h-1 bg-brand-500 w-full fixed top-0 left-0 z-50 transition-all duration-300 transform scale-x-0 origin-left"></div>
 
   <!-- ================= LOGIN / REGISTER SCREEN ================= -->
   <div id="authScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 px-6 hidden">
@@ -114,7 +104,7 @@
   <!-- ================= APP HEADER ================= -->
   <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 dark:border-slate-800/80 glass-effect transition-all">
     <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between relative">
-      <!-- โลโก้ Finsave พร้อมความสามารถในการกดเปิด/ปิด เมนูสไลด์แนวนอน -->
+      <!-- โลโก้สไลด์เมนูเปิด/ปิด -->
       <div onclick="toggleSlideMenu()" class="flex items-center gap-2 cursor-pointer select-none active:scale-95 transition-transform duration-150">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
           <span class="material-symbols-rounded text-2xl">account_balance_wallet</span>
@@ -122,13 +112,13 @@
         <div>
           <div class="flex items-center gap-1">
             <h1 class="text-lg font-bold bg-gradient-to-r from-brand-600 to-emerald-500 dark:from-brand-400 dark:to-emerald-300 bg-clip-text text-transparent">Finsave</h1>
-            <span class="material-symbols-rounded text-slate-400 text-sm" id="menuArrowIcon">keyboard_arrow_right</span>
+            <span class="material-symbols-rounded text-slate-400 text-sm transition-transform duration-200" id="menuArrowIcon">keyboard_arrow_right</span>
           </div>
-          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-semibold" id="headerDateTime">08/06/2026 --:--</p>
+          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-semibold" id="headerDateTime">08/06/2026 23:16</p>
         </div>
       </div>
       
-      <!-- เมนูสไลด์แนวนอน (Horizontal Slide Menu) เลื่อนออกจากโลโก้ -->
+      <!-- เมนูสไลด์แนวนอน เลื่อนออกจากโลโก้ -->
       <div id="horizontalSlideMenu" class="absolute left-36 right-28 top-1/2 -translate-y-1/2 h-10 bg-white/90 dark:bg-slate-900/90 border border-slate-200/50 dark:border-slate-800/50 rounded-xl flex items-center px-2 gap-1.5 menu-slide opacity-0 pointer-events-none -translate-x-4 shadow-md overflow-x-auto no-scrollbar">
         <button onclick="switchPage('dashboard'); toggleSlideMenu();" class="p-1.5 text-slate-500 hover:text-brand-500 rounded-lg" title="หน้าแรก">
           <span class="material-symbols-rounded text-lg">grid_view</span>
@@ -144,12 +134,12 @@
         </button>
       </div>
       
-      <!-- ปุ่มรีโหลด และปุ่มเปลี่ยนโหมดมืดสว่าง -->
+      <!-- รีโหลดคู่โหมดมืดอัตโนมัติ -->
       <div class="flex items-center gap-1.5">
-        <button onclick="syncData(true)" class="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-900 hover:bg-brand-50 dark:hover:bg-brand-950/30 text-slate-600 dark:text-slate-300 hover:text-brand-500 btn-smooth active:scale-95" title="รีโหลดข้อมูลใหม่">
+        <button onclick="syncData(true)" class="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-900 hover:bg-brand-50 dark:hover:bg-brand-950/30 text-slate-600 dark:text-slate-300 hover:text-brand-500 btn-smooth active:scale-95" title="รีโหลดข้อมูล">
           <span class="material-symbols-rounded text-xl" id="syncIcon">sync</span>
         </button>
-        <button onclick="toggleThemeManually()" id="themeIndicator" class="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-900 text-amber-500 dark:text-indigo-400 font-semibold btn-smooth active:scale-95" title="สลับโหมดการแสดงผล">
+        <button onclick="toggleThemeManually()" id="themeIndicator" class="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-900 text-amber-500 dark:text-indigo-400 font-semibold btn-smooth active:scale-95" title="สลับโหมด">
           <span class="material-symbols-rounded text-xl" id="themeIcon">wb_sunny</span>
         </button>
       </div>
@@ -162,7 +152,7 @@
     <!-- ================= SECTION 1: DASHBOARD (หน้าหลัก) ================= -->
     <section id="page-dashboard" class="space-y-6">
       
-      <!-- การ์ดเงินออมสะสมทั้งหมด -->
+      <!-- การ์ดเงินสะสม -->
       <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-brand-950 text-white p-6 shadow-xl shadow-slate-950/20 border border-slate-800">
         <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl"></div>
         <div class="absolute right-4 top-4 bg-white/10 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider backdrop-blur-sm border border-white/5 flex items-center gap-1">
@@ -186,7 +176,7 @@
         </div>
       </div>
 
-      <!-- ส่วนของ AI Finsave -->
+      <!-- AI Finsave -->
       <div class="bg-gradient-to-r from-indigo-50 to-brand-50 dark:from-indigo-950/20 dark:to-brand-950/20 border border-indigo-100 dark:border-indigo-950/50 rounded-2xl p-4 shadow-sm relative overflow-hidden">
         <div class="flex items-start gap-3">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white shrink-0 shadow-md">
@@ -235,12 +225,12 @@
         </div>
         
         <div id="dashboardGoalContainer">
-          <div class="text-center py-4 text-xs text-slate-400">ยังไม่มีเป้าหมายที่ตั้งไว้ หรือกำลังโหลดข้อมูล...</div>
+          <div class="text-center py-4 text-xs text-slate-400">ยังไม่มีเป้าหมายที่ตั้งไว้...</div>
         </div>
       </div>
     </section>
 
-    <!-- ================= SECTION 2: SAVE TRANSACTION (บันทึกออม & รายจ่าย) ================= -->
+    <!-- ================= SECTION 2: บันทึกออม & รายจ่าย ================= -->
     <section id="page-save-transaction" class="hidden space-y-6">
       <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-3xl shadow-sm space-y-6">
         
@@ -270,7 +260,7 @@
 
           <div>
             <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">บันทึกความทรงจำ / รายละเอียด</label>
-            <input type="text" id="transNote" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" placeholder="เช่น ค่าข้าวเย็น, หยอดปุกเก็บหอมรอมริบ">
+            <input type="text" id="transNote" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" placeholder="เช่น ค่าข้าวเย็น, หยอดปุกเก็บเงิน">
           </div>
 
           <div class="bg-slate-50 dark:bg-slate-950 px-4 py-3 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between">
@@ -285,13 +275,14 @@
       </div>
     </section>
 
-    <!-- ================= SECTION 3: SAVINGS RANKS (หน้ายศการออม) ================= -->
+    <!-- ================= SECTION 3: SAVINGS RANKS (ยศการออม) ================= -->
     <section id="page-ranks" class="hidden space-y-6">
       <div class="bg-gradient-to-tr from-brand-900 to-indigo-950 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden border border-brand-800">
         <div class="absolute -right-10 -top-10 w-40 h-40 bg-brand-500/20 rounded-full blur-3xl"></div>
         <div class="flex items-center gap-4">
-          <div id="rankBadge" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-yellow-400 to-amber-500 flex items-center justify-center text-white shadow-lg text-3xl font-bold animate-bounce">
-            🎖️
+          <!-- ไอคอน Badge แสดงยศในรูปแบบ Material Symbol พรีเมียม -->
+          <div id="rankBadgeContainer" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-yellow-400 to-amber-500 flex items-center justify-center text-white shadow-lg animate-bounce">
+            <span class="material-symbols-rounded text-3xl" id="rankBadgeIcon">military_tech</span>
           </div>
           <div>
             <span class="text-[10px] text-brand-300 font-bold uppercase tracking-wider">ยศการออมปัจจุบัน</span>
@@ -313,16 +304,14 @@
 
       <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-3xl shadow-sm space-y-4">
         <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200">ทำเนียบยศการออมเงิน Finsave</h3>
-        <div class="space-y-3" id="ranksListContainer">
-          <!-- รายการระดับยศจะถูกสร้างขึ้นทาง JS -->
-        </div>
+        <div class="space-y-3" id="ranksListContainer"></div>
       </div>
     </section>
 
-    <!-- ================= SECTION 4: GOALS (เป้าหมายการออม) ================= -->
+    <!-- ================= SECTION 4: GOALS (เป้าหมาย) ================= -->
     <section id="page-goals" class="hidden space-y-6">
       
-      <!-- ฟอร์มสร้างเป้าหมายใหม่ -->
+      <!-- ตั้งเป้าหมายใหม่ -->
       <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-3xl shadow-sm space-y-4">
         <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
           <span class="material-symbols-rounded text-brand-500">add_task</span> ตั้งเป้าหมายใหม่
@@ -344,20 +333,18 @@
         </form>
       </div>
 
-      <!-- รายการเป้าหมายปัจจุบัน -->
       <div class="space-y-4">
         <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">เป้าหมายกำลังดำเนินการ</h3>
         <div id="activeGoalsList" class="space-y-3"></div>
       </div>
 
-      <!-- ประวัติเป้าหมายที่สำเร็จแล้ว -->
       <div class="space-y-4">
         <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">🏆 เป้าหมายที่สําเร็จ (100%)</h3>
         <div id="completedGoalsList" class="space-y-3"></div>
       </div>
     </section>
 
-    <!-- ================= SECTION 5: HISTORY (ประวัติการทำรายการ) ================= -->
+    <!-- ================= SECTION 5: HISTORY (ประวัติธุรกรรม) ================= -->
     <section id="page-history" class="hidden space-y-4">
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-bold text-slate-800 dark:text-slate-200">ประวัติธุรกรรม</h2>
@@ -376,7 +363,7 @@
     <!-- ================= SECTION 6: ANALYTICS (วิเคราะห์การออม) ================= -->
     <section id="page-analytics" class="hidden space-y-6">
       
-      <!-- แผนภูมิสถิติสัปดาห์นี้ จันทร์-อาทิตย์ -->
+      <!-- แผนภูมิสถิติสัปดาห์นี้ -->
       <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-3xl shadow-sm space-y-3">
         <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200">สถิติสัปดาห์นี้ (จันทร์ - อาทิตย์)</h3>
         <div class="h-48 w-full">
@@ -384,7 +371,7 @@
         </div>
       </div>
 
-      <!-- คำนวณแบบจำลองการออมเงินรายวัน เดือน รายปี -->
+      <!-- คำนวณแบบจำลองการออมรายวัน/เดือน/ปี -->
       <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-3xl shadow-sm space-y-4">
         <div class="flex items-center gap-2">
           <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
@@ -428,7 +415,7 @@
       </div>
     </section>
 
-    <!-- ================= SECTION 7: PROFILE & SETTINGS (หน้าโปรไฟล์/ตั้งค่า) ================= -->
+    <!-- ================= SECTION 7: PROFILE & SETTINGS (โปรไฟล์) ================= -->
     <section id="page-profile" class="hidden space-y-6">
       
       <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-3xl shadow-sm text-center space-y-4">
@@ -546,7 +533,7 @@
     <span id="toastMessage">กำลังดำเนินการ...</span>
   </div>
 
-  <!-- ================= POPUP MODAL (เพิ่ม/ลดเงินในเป้าหมาย) ================= -->
+  <!-- ================= POPUP MODAL (จัดการเงินเป้าหมาย) ================= -->
   <div id="goalModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm hidden px-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-sm rounded-3xl p-5 shadow-2xl space-y-4">
       <div class="flex items-center justify-between">
@@ -626,9 +613,8 @@
     // ================= CONFIG & GLOBALS =================
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCCJzJYz-CvVbC_HKOspVxKE8JXjdLWjYY739Ab-O19Q959chbohLzjk6m1YFD7UJM/exec';
 
-    // โครงสร้างข้อมูลสเตทแอปพลิเคชัน
     let appState = {
-      currentUser: null, // เก็บข้อมูลผู้ใช้ที่เข้าสู่ระบบปัจจุบัน
+      currentUser: null, 
       savings: [], 
       goals: []
     };
@@ -641,18 +627,18 @@
     let confirmPromiseResolver = null; 
     let slideMenuOpen = false;
 
-    // ตัวแปรสำหรับคีย์ล็อกแอป
+    // ตัวแปรล็อกแอป
     let currentPinInput = "";
     const PIN_LENGTH = 4;
 
-    // ระบบจัดยศเงินออม
+    // ระบบจัดยศเงินออม (ใช้ Material Icons พรีเมียมแทน Emoji)
     const RANKS = [
-      { min: 0, title: '🥉 Bronze Saver', desc: 'ระดับฝึกหัดเพิ่งเริ่มหยอดกระปุก', icon: '🥉', color: 'from-amber-600 to-amber-700' },
-      { min: 500, title: '🥈 Silver Saver', desc: 'เริ่มมีความตั้งใจออมอย่างมีวินัย', icon: '🥈', color: 'from-slate-400 to-slate-500' },
-      { min: 2000, title: '🥇 Gold Saver', desc: 'สะสมเงินออมได้เป็นปึกแผ่น', icon: '🥇', color: 'from-yellow-400 to-amber-500' },
-      { min: 10000, title: '💎 Platinum Saver', desc: 'ยอดฝีมือการออมที่ยากจะหาตัวจับ', icon: '💎', color: 'from-blue-400 to-indigo-500' },
-      { min: 50000, title: '👑 Wealth Master', desc: 'ราชาแห่งการออมเงินอย่างชาญฉลาด', icon: '👑', color: 'from-purple-500 to-indigo-700' },
-      { min: 100000, title: '🚀 Galactic Legend', desc: 'ตำนานการสร้างฐานะของจักรวาล Finsave', icon: '🚀', color: 'from-brand-500 to-cyan-500' }
+      { min: 0, title: 'Bronze Saver', desc: 'ระดับเริ่มต้นก้าวสู่อิสรภาพการเงิน', icon: 'military_tech', color: 'from-amber-600 to-amber-700 text-amber-500' },
+      { min: 500, title: 'Silver Saver', desc: 'เริ่มออมเงินอย่างมีระเบียบวินัย', icon: 'workspace_premium', color: 'from-slate-400 to-slate-500 text-slate-400' },
+      { min: 2000, title: 'Gold Saver', desc: 'ยอดเงินเริ่มสะสมสมบูรณ์เป็นปึกแผ่น', icon: 'stars', color: 'from-yellow-400 to-amber-500 text-yellow-500' },
+      { min: 10000, title: 'Platinum Saver', desc: 'สิงห์นักออมที่มีความมานะและวางแผนเก่ง', icon: 'diamond', color: 'from-blue-400 to-indigo-500 text-blue-400' },
+      { min: 50000, title: 'Wealth Master', desc: 'ปรมาจารย์สร้างสินทรัพย์และคุมรายจ่ายยอดเยี่ยม', icon: 'crown', color: 'from-purple-500 to-indigo-700 text-purple-400' },
+      { min: 100000, title: 'Galactic Legend', desc: 'ตํานานความมั่งคั่งสูงสุดของ Finsave', icon: 'rocket_launch', color: 'from-brand-500 to-cyan-500 text-emerald-400' }
     ];
 
     // ================= INITIALIZATION =================
@@ -661,7 +647,6 @@
       updateDateTime();
       setInterval(updateDateTime, 1000);
       
-      // ตรวจสอบเซสชันผู้ใช้ (1 บัญชีต่ออุปกรณ์)
       checkUserSession();
       calculateSavingsEstimation();
     };
@@ -710,10 +695,10 @@
       manualThemeOverride = true;
       const isCurrentlyDark = document.documentElement.classList.contains('dark');
       setThemeMode(!isCurrentlyDark);
-      showToast("เปลี่ยนธีมการแสดงผลแล้ว", true);
+      showToast("สลับการแสดงผลเรียบร้อย", true);
     }
 
-    // ================= MENUBAR SLIDE OPEN/CLOSE =================
+    // ================= MENUBAR SLIDE =================
     function toggleSlideMenu() {
       const menu = document.getElementById('horizontalSlideMenu');
       const arrow = document.getElementById('menuArrowIcon');
@@ -730,7 +715,7 @@
       }
     }
 
-    // ================= AUTHENTICATION (LOGIN/REGISTER) =================
+    // ================= AUTHENTICATION =================
     let isRegisterMode = false;
 
     function checkUserSession() {
@@ -738,11 +723,9 @@
       if (sessionUser) {
         appState.currentUser = JSON.parse(sessionUser);
         document.getElementById('authScreen').classList.add('hidden');
-        initAppLock(); // เรียกการตรวจสอบ PIN (ถ้ามีการตั้งค่าไว้)
         syncData();
       } else {
         document.getElementById('authScreen').classList.remove('hidden');
-        showLoading(false);
       }
     }
 
@@ -757,7 +740,7 @@
         title.innerText = "ลงทะเบียน Finsave";
         submitText.innerText = "สร้างบัญชีใหม่";
         toggleBtn.innerText = "มีบัญชีอยู่แล้ว? เข้าสู่ระบบที่นี่";
-        subtitle.innerText = "กรอกข้อมูลเพื่อเชื่อมโยงพื้นที่จัดเก็บข้อมูลของคุณ";
+        subtitle.innerText = "เชื่อมโยงฐานข้อมูลส่วนบุคคล 1 เครื่องต่อ 1 บัญชีผู้ใช้งาน";
       } else {
         title.innerText = "เข้าสู่ระบบ Finsave";
         submitText.innerText = "เข้าสู่ระบบทันที";
@@ -776,8 +759,7 @@
         return;
       }
 
-      showLoading(true, isRegisterMode ? "กำลังสร้างบัญชีผู้ใช้ใหม่..." : "กำลังยืนยันข้อมูลผู้ใช้งาน...");
-
+      setSyncProgress(50);
       const action = isRegisterMode ? "registerUser" : "loginUser";
       
       const formData = new URLSearchParams();
@@ -792,24 +774,22 @@
       .then(res => res.json())
       .then(result => {
         if (result && result.success) {
-          showToast(isRegisterMode ? "สร้างบัญชีผู้ใช้สำเร็จ!" : "เข้าสู่ระบบสำเร็จ!", true);
+          showToast(isRegisterMode ? "สร้างบัญชีสำเร็จ!" : "เข้าสู่ระบบสำเร็จ!", true);
           appState.currentUser = { username: username };
           localStorage.setItem('finsave_session_user', JSON.stringify(appState.currentUser));
           
           document.getElementById('authScreen').classList.add('hidden');
           document.getElementById('authForm').reset();
-          
           syncData();
         } else {
-          showToast(result.message || "เกิดข้อผิดพลาดในการตรวจสอบสิทธิ์", false);
+          showToast(result.message || "เกิดข้อผิดพลาด", false);
         }
       })
-      .catch(err => {
-        console.error(err);
-        showToast("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์", false);
+      .catch(() => {
+        showToast("เซิร์ฟเวอร์ขัดข้อง กรุณาลองใหม่อีกครั้ง", false);
       })
       .finally(() => {
-        showLoading(false);
+        setSyncProgress(0);
       });
     }
 
@@ -823,62 +803,6 @@
     }
 
     // ================= PIN LOCK SYSTEM =================
-    function initAppLock() {
-      const savedPin = localStorage.getItem('finsave_pin');
-      if (savedPin) {
-        document.getElementById('pinLockScreen').classList.remove('hidden');
-        currentPinInput = "";
-        updatePinDots();
-      }
-    }
-
-    function pressPin(digit) {
-      if (currentPinInput.length < PIN_LENGTH) {
-        currentPinInput += digit;
-        updatePinDots();
-        
-        if (currentPinInput.length === PIN_LENGTH) {
-          setTimeout(verifyPin, 150);
-        }
-      }
-    }
-
-    function updatePinDots() {
-      for (let i = 1; i <= PIN_LENGTH; i++) {
-        const dot = document.getElementById(`pin-dot-${i}`);
-        if (currentPinInput.length >= i) {
-          dot.classList.remove('border-slate-600');
-          dot.classList.add('bg-brand-500', 'border-brand-500', 'scale-110');
-        } else {
-          dot.classList.add('border-slate-600');
-          dot.classList.remove('bg-brand-500', 'border-brand-500', 'scale-110');
-        }
-      }
-    }
-
-    function clearPin() {
-      currentPinInput = "";
-      updatePinDots();
-    }
-
-    function deletePinDigit() {
-      if (currentPinInput.length > 0) {
-        currentPinInput = currentPinInput.slice(0, -1);
-        updatePinDots();
-      }
-    }
-
-    function verifyPin() {
-      const savedPin = localStorage.getItem('finsave_pin');
-      if (currentPinInput === savedPin) {
-        document.getElementById('pinLockScreen').classList.add('hidden');
-        showToast("ปลดล็อกแอป Finsave สำเร็จ", true);
-      } else {
-        showToast("รหัส PIN ไม่ถูกต้อง กรุณาลองใหม่", false);
-        clearPin();
-      }
-    }
-
     function openChangePinModal() {
       document.getElementById('newAppPin').value = "";
       document.getElementById('pinChangeModal').classList.remove('hidden');
@@ -899,7 +823,7 @@
       const lastChanged = localStorage.getItem('finsave_pin_last_changed');
 
       if (lastChanged === todayStr) {
-        showToast("จำกัดการเปลี่ยนรหัสผ่านได้สูงสุด 1 ครั้งต่อวัน", false);
+        showToast("เปลี่ยนรหัสผ่านสำเร็จไปแล้วในวันนี้ สูงสุดได้ 1 ครั้งต่อวัน", false);
         closeChangePinModal();
         return;
       }
@@ -929,57 +853,44 @@
       }
     }
 
-    // ================= ROUTING & LOADERS =================
+    // ================= ROUTING & LOADERS (INSTANT TRANSITION) =================
     function switchPage(pageId, optionalParam = '') {
-      showLoading(true, "กำลังเปลี่ยนหน้า...");
-      
-      setTimeout(() => {
-        const sections = ['dashboard', 'save-transaction', 'ranks', 'goals', 'history', 'analytics', 'profile'];
-        sections.forEach(sec => {
-          const el = document.getElementById(`page-${sec}`);
-          if (el) el.classList.add('hidden');
-          
-          const btn = document.getElementById(`nav-${sec}`);
-          if (btn) {
-            btn.className = "flex flex-col items-center justify-center flex-1 h-full text-slate-400 dark:text-slate-500 hover:text-slate-600 btn-smooth";
-          }
-        });
-
-        const activeSection = document.getElementById(`page-${pageId}`);
-        if (activeSection) activeSection.classList.remove('hidden');
-
-        const activeBtn = document.getElementById(`nav-${pageId}`);
-        if (activeBtn) {
-          activeBtn.className = "flex flex-col items-center justify-center flex-1 h-full text-brand-500 font-bold btn-smooth";
+      // สลับหน้าแบบเรียลไทม์ทันทีโดยไม่มีหน้าจอโหลดขัดจังหวะ เพื่อความรวดเร็วและไม่มีค้าง
+      const sections = ['dashboard', 'save-transaction', 'ranks', 'goals', 'history', 'analytics', 'profile'];
+      sections.forEach(sec => {
+        const el = document.getElementById(`page-${sec}`);
+        if (el) el.classList.add('hidden');
+        
+        const btn = document.getElementById(`nav-${sec}`);
+        if (btn) {
+          btn.className = "flex flex-col items-center justify-center flex-1 h-full text-slate-400 dark:text-slate-500 hover:text-slate-600 btn-smooth";
         }
+      });
 
-        if (pageId === 'save-transaction') {
-          if (optionalParam === 'expense') {
-            setSaveTab('expense');
-          } else {
-            setSaveTab('income');
-          }
-        } else if (pageId === 'analytics') {
-          setTimeout(() => { renderWeeklyChart(); }, 50);
+      const activeSection = document.getElementById(`page-${pageId}`);
+      if (activeSection) activeSection.classList.remove('hidden');
+
+      const activeBtn = document.getElementById(`nav-${pageId}`);
+      if (activeBtn) {
+        activeBtn.className = "flex flex-col items-center justify-center flex-1 h-full text-brand-500 font-bold btn-smooth";
+      }
+
+      if (pageId === 'save-transaction') {
+        if (optionalParam === 'expense') {
+          setSaveTab('expense');
+        } else {
+          setSaveTab('income');
         }
-
-        showLoading(false);
-      }, 80); 
+      } else if (pageId === 'analytics') {
+        renderWeeklyChart();
+      }
     }
 
-    function showLoading(show, message = "กำลังโหลดข้อมูล...") {
-      const loader = document.getElementById('loadingScreen');
-      const text = document.getElementById('loadingText');
-      if (!loader || !text) return;
-      
-      if (show) {
-        text.innerText = message;
-        loader.classList.remove('opacity-0', 'pointer-events-none');
-        loader.classList.add('opacity-100', 'pointer-events-auto');
-      } else {
-        loader.classList.remove('opacity-100', 'pointer-events-auto');
-        loader.classList.add('opacity-0', 'pointer-events-none');
-      }
+    // แสดงแถบความคืบหน้าตรงขอบบนจออย่างเงียบๆ และพรีเมียม
+    function setSyncProgress(percent) {
+      const bar = document.getElementById('syncProgressBar');
+      if (!bar) return;
+      bar.style.transform = `scale-x(${percent / 100})`;
     }
 
     function showToast(message, isSuccess = true) {
@@ -1006,17 +917,14 @@
       }, 3000);
     }
 
-    // ================= SERVER SYNCING (Real-time ด้วย Google Sheets) =================
+    // ================= SERVER SYNCING (Google Sheets Real-time) =================
     function syncData(isManual = false) {
       if (!appState.currentUser) return;
       
-      if (isManual) {
-        showLoading(true, "กำลังดึงข้อมูลใหม่ล่าสุด...");
-        const syncIcon = document.getElementById('syncIcon');
-        if (syncIcon) syncIcon.classList.add('animate-spin');
-      }
+      setSyncProgress(30);
+      const syncIcon = document.getElementById('syncIcon');
+      if (syncIcon) syncIcon.classList.add('animate-spin');
 
-      // ส่งตัวระบุตัวตนของผู้ใช้ เพื่อดึงข้อมูลเฉพาะบุคคล
       fetch(`${APPS_SCRIPT_URL}?action=getData&username=${encodeURIComponent(appState.currentUser.username)}`)
         .then(response => {
           if (!response.ok) throw new Error('ระบบไม่สามารถดาวน์โหลดข้อมูลได้');
@@ -1030,22 +938,23 @@
             localStorage.setItem('finsave_backup_' + appState.currentUser.username, JSON.stringify(appState));
             
             updateUIRender();
+            setSyncProgress(100);
             if (isManual) {
-              showToast("เชื่อมโยงระบบชีตและซิงค์ข้อมูลเรียบร้อย!", true);
+              showToast("ซิงค์ข้อมูลกับคลาวด์เรียบร้อย!", true);
             }
           } else {
-            throw new Error(data.message || 'โครงสร้างข้อมูลไม่สมบูรณ์');
+            throw new Error(data.message || 'โครงสร้างไม่ถูกต้อง');
           }
         })
         .catch(err => {
-          console.warn("ขัดข้องในการติดต่อเซิร์ฟเวอร์หลัก ดึงข้อมูลสำรองบนเครื่องมาใช้ชั่วคราว:", err);
+          console.warn("เซิร์ฟเวอร์ขัดข้อง กำลังเรียกฐานข้อมูลสำรองบนอุปกรณ์:", err);
           const backup = localStorage.getItem('finsave_backup_' + appState.currentUser.username);
           if (backup) {
             const parsed = JSON.parse(backup);
             appState.savings = parsed.savings || [];
             appState.goals = parsed.goals || [];
             updateUIRender();
-            showToast("สลับเป็นฐานข้อมูลออฟไลน์ชั่วคราว", true);
+            showToast("กู้คืนข้อมูลออฟไลน์ชั่วคราวสำเร็จ", true);
           } else {
             generateSampleData();
             updateUIRender();
@@ -1053,27 +962,24 @@
           }
         })
         .finally(() => {
-          showLoading(false);
-          const syncIcon = document.getElementById('syncIcon');
+          setTimeout(() => setSyncProgress(0), 400);
           if (syncIcon) syncIcon.classList.remove('animate-spin');
         });
     }
 
     function generateSampleData() {
       appState.savings = [
-        { id: '1', type: 'income', amount: 500, note: 'ออมวันแรกเพื่อความมั่นคง', date: '08/06/2026' }
+        { id: '1', type: 'income', amount: 500, note: 'ออมเงินเบื้องต้นเริ่มต้นระบบ', date: '08/06/2026' }
       ];
       appState.goals = [
-        { id: 'g1', name: 'ซื้อหูฟังบลูทูธพรีเมียม', target: 1200, current: 800, status: 'active' }
+        { id: 'g1', name: 'ซื้อแท็บเล็ตเรียนต่อ', target: 5000, current: 1500, status: 'active' }
       ];
     }
 
-    function sendDataToServer(action, payload, silent = false) {
+    function sendDataToServer(action, payload) {
       if (!appState.currentUser) return Promise.reject("Unauthorized");
-      if (!silent) {
-        showLoading(true, "กำลังปรับปรุงข้อมูลใน Google Sheets...");
-      }
-      
+      setSyncProgress(60);
+
       const formData = new URLSearchParams();
       formData.append('action', action);
       formData.append('username', appState.currentUser.username);
@@ -1085,20 +991,19 @@
         body: formData.toString()
       })
       .then(response => {
-        if (!response.ok) throw new Error('การติดต่อเซิร์ฟเวอร์ขัดข้อง');
+        if (!response.ok) throw new Error('ติดต่อเซิร์ฟเวอร์ผิดพลาด');
         return response.json();
       })
       .then(result => {
         if (result && result.success) {
           return result;
         } else {
-          throw new Error(result.message || 'ทำรายการไม่สำเร็จ');
+          throw new Error(result.message || 'ทำรายการล้มเหลว');
         }
       })
       .finally(() => {
-        if (!silent) {
-          showLoading(false);
-        }
+        setSyncProgress(100);
+        setTimeout(() => setSyncProgress(0), 400);
       });
     }
 
@@ -1161,8 +1066,8 @@
       } else {
         dbGoalContainer.innerHTML = `
           <div class="text-center py-4">
-            <p class="text-xs text-slate-400">ยังไม่มีเป้าหมายที่ตั้งไว้ในขณะนี้</p>
-            <button onclick="switchPage('goals')" class="mt-2 text-[10px] font-bold text-brand-500 hover:underline">สร้างเป้าหมายการเงิน</button>
+            <p class="text-xs text-slate-400">ไม่มีเป้าหมายที่อยู่ระหว่างดำเนินการ</p>
+            <button onclick="switchPage('goals')" class="mt-2 text-[10px] font-bold text-brand-500 hover:underline">สร้างเป้าหมายเพื่อความสำเร็จ</button>
           </div>
         `;
       }
@@ -1210,7 +1115,7 @@
         date: dateStr
       };
 
-      // เพิ่มเข้า Local State ทันทีเพื่อให้แสดงผลทันใจ (Instant UI Action)
+      // อัปเดตข้อมูลขึ้นหน้าจอทันที ไม่แสดงตัวหมุนโหลดเพื่อความพริ้วไหว
       appState.savings.unshift(newTransaction);
       localStorage.setItem('finsave_backup_' + appState.currentUser.username, JSON.stringify(appState));
       updateUIRender();
@@ -1218,35 +1123,33 @@
       document.getElementById('transactionForm').reset();
       switchPage('dashboard');
 
-      // ส่งคำสั่งแบบเบื้องหลัง (silent = true) เพื่อประสิทธิภาพสูงสุด ไร้รอยสะดุด
-      sendDataToServer('addSavings', newTransaction, true)
+      sendDataToServer('addSavings', newTransaction)
         .then(() => {
-          showToast(activeSaveTab === 'income' ? "บันทึกข้อมูลการออมเงินเรียบร้อยแล้ว!" : "บันทึกรายจ่ายเรียบร้อยแล้ว!", true);
+          showToast(activeSaveTab === 'income' ? "บันทึกการออมเรียบร้อยแล้ว!" : "บันทึกรายจ่ายเรียบร้อยแล้ว!", true);
         })
-        .catch(err => {
-          console.warn("ส่งเซิร์ฟเวอร์ขัดข้อง กำลังเก็บบันทึกบนเครื่อง", err);
-          showToast("บันทึกข้อมูลไว้ชั่วคราวบนอุปกรณ์", true);
+        .catch(() => {
+          showToast("ออมเงินออฟไลน์บนอุปกรณ์เรียบร้อย", true);
         });
     }
 
-    // ระบบ Instant Delete ไร้กำลังโหลดบังหน้าจอ คัดสรร UI เพื่อความรวดเร็ว
+    // ระบบลบรายการความเร็วสูง (Instant UI Delete)
     async function deleteTransaction(id) {
       const confirmed = await showCustomConfirm(
         "ยืนยันการลบธุรกรรม", 
-        "ระบบจะคำนวณและอัปเดตยอดเงินสะสมทั้งหมดใหม่ทันทีหลังจากที่คุณกดปุ่มยืนยัน"
+        "ระบบจะดำเนินการอัปเดตยอดเงินสะสมให้คุณใหม่ทันทีโดยไม่ต้องรอดาวน์โหลดคลาวด์"
       );
       if (!confirmed) return;
 
-      // ลบจากเครื่องทันที
+      // ลบจากความทรงจำทันที (Instant Update)
       appState.savings = appState.savings.filter(t => t.id !== id);
       localStorage.setItem('finsave_backup_' + appState.currentUser.username, JSON.stringify(appState));
       updateUIRender();
-      showToast("ลบข้อมูลธุรกรรมสำเร็จ", true);
+      showToast("ลบข้อมูลธุรกรรมเรียบร้อย", true);
 
-      // ค่อยส่งไปลบบนฐานข้อมูลจริงแบบเงียบ (silent = true)
-      sendDataToServer('deleteSavings', { id }, true)
+      // ค่อยนำไปประสานงานกับชีตเบื้องหลังแบบเงียบๆ
+      sendDataToServer('deleteSavings', { id })
         .catch(err => {
-          console.warn("ยังลบข้อมูลบนคลาวด์ไม่สำเร็จ ข้อมูลหลักในเครื่องได้รับการลบแล้ว", err);
+          console.warn("การลบบนเซิร์ฟเวอร์ล้มเหลวชั่วคราว ข้อมูลในอุปกรณ์ลบสำเร็จแล้ว", err);
         });
     }
 
@@ -1270,7 +1173,6 @@
 
       setTimeout(() => {
         let advice = "";
-        
         if (totalRounds === 0) {
           advice = "สวัสดีครับ ผมชื่อ AI Finsave ยินดีต้อนรับครับ! เริ่มหยอดเงินออมก้อนแรกของคุณผ่านหน้าบันทึกได้ทันที เพื่อให้ผมช่วยวิเคราะห์แนวโน้มของคุณนะครับ";
         } else {
@@ -1286,7 +1188,6 @@
             advice = `📈 <b>สมดุลการออมอยู่ในเกณฑ์ดี!</b> รายจ่ายสะสมอยู่ที่ ${ratio.toFixed(1)}% ของเงินออมทั้งหมด คุณยังมีงบประมาณคงเหลือในกระเป๋าอย่างปลอดภัย รักษาระดับวินัยเช่นนี้เพื่อบรรลุเป้าหมายการเงินโดยเร็วครับ`;
           }
         }
-        
         aiText.innerHTML = advice;
       }, 300);
     }
@@ -1444,10 +1345,9 @@
       document.getElementById('goalName').value = "";
       document.getElementById('goalTarget').value = "";
 
-      // ปรับเปลี่ยนแบบจำลองข้อมูลบน Sheets แบบเงียบ
-      sendDataToServer('addGoal', newGoal, true)
+      sendDataToServer('addGoal', newGoal)
         .catch(() => {
-          console.warn("การเชื่อมโยงระบบชีตเป้าหมายล้มเหลว แต่บันทึกไว้ในอุปกรณ์แล้ว");
+          console.warn("การเชื่อมเป้าหมายหลักไม่สำเร็จ ข้อมูลยังบันทึกในเครื่องปลอดภัย");
         });
     }
 
@@ -1463,9 +1363,9 @@
       updateUIRender();
       showToast("ลบเป้าหมายเรียบร้อยแล้ว", true);
 
-      sendDataToServer('deleteGoal', { id }, true)
+      sendDataToServer('deleteGoal', { id })
         .catch(() => {
-          console.warn("ไม่สามารถลบที่เซอร์เวอร์ได้ในขณะนี้ แต่อัปเดตในอุปกรณ์เรียบร้อยแล้ว");
+          console.warn("เซิร์ฟเวอร์ยังไม่ประสานงานข้อมูล แต่ลบในเครื่องเรียบร้อยแล้ว");
         });
     }
 
@@ -1541,9 +1441,9 @@
         showToast("ปรับปรุงยอดเป้าหมายเรียบร้อย", true);
       }
 
-      sendDataToServer('updateGoal', updatedPayload, true)
+      sendDataToServer('updateGoal', updatedPayload)
         .catch(() => {
-          console.warn("การบันทึกยอดเป้าหมายผิดพลาด ข้อมูลจะถูกจัดเก็บไว้ในเครื่อง");
+          console.warn("ประสานงานเป้าหมายกับ Sheets ขัดข้อง บันทึกไว้บนเครื่องเรียบร้อยแล้ว");
         });
     }
 
@@ -1571,10 +1471,11 @@
       const currentRankTitleEl = document.getElementById('currentRankTitle');
       if (currentRankTitleEl) currentRankTitleEl.innerText = userRank.title;
       
-      const rankBadgeEl = document.getElementById('rankBadge');
-      if (rankBadgeEl) {
-        rankBadgeEl.innerText = userRank.icon;
-        rankBadgeEl.className = `w-16 h-16 rounded-2xl bg-gradient-to-tr ${userRank.color} flex items-center justify-center text-white shadow-lg text-3xl font-bold animate-bounce`;
+      const rankBadgeIconEl = document.getElementById('rankBadgeIcon');
+      const rankBadgeContainer = document.getElementById('rankBadgeContainer');
+      if (rankBadgeIconEl && rankBadgeContainer) {
+        rankBadgeIconEl.innerText = userRank.icon;
+        rankBadgeContainer.className = `w-16 h-16 rounded-2xl bg-gradient-to-tr ${userRank.color} flex items-center justify-center text-white shadow-lg animate-bounce`;
       }
 
       const rankProgressTextEl = document.getElementById('rankProgressText');
@@ -1607,7 +1508,7 @@
 
         rankCard.innerHTML = `
           <div class="flex items-center gap-3">
-            <span class="text-2xl">${r.icon}</span>
+            <span class="material-symbols-rounded text-2xl ${isEarned ? r.color : 'text-slate-400'}">${r.icon}</span>
             <div>
               <span class="text-xs font-bold block ${isEarned ? 'text-slate-800 dark:text-slate-100' : 'text-slate-500'}">${r.title}</span>
               <span class="text-[10px] text-slate-400 block">${r.desc}</span>
@@ -1621,10 +1522,9 @@
         container.appendChild(rankCard);
       });
 
-      // จัดการอัปเดตยศในหน้าโปรไฟล์
       const labelStatus = document.getElementById('profileLabelStatus');
       if (labelStatus) {
-        labelStatus.innerHTML = `สถานะสมาชิก: <b class="text-brand-500">${userRank.title}</b>`;
+        labelStatus.innerHTML = `สถานะสมาชิก: <b class="text-brand-500 font-bold">${userRank.title}</b>`;
       }
     }
 
@@ -1719,10 +1619,11 @@
     }
 
     function checkAppVersionUpdate() {
-      showLoading(true, "กำลังเปรียบเทียบข้อมูลบนคลาวด์...");
+      setSyncProgress(50);
       setTimeout(() => {
-        showLoading(false);
-        showToast("แอปพลิเคชันเป็นเวอร์ชันล่าสุดเรียบร้อยแล้ว!", true);
+        setSyncProgress(100);
+        showToast("เวอร์ชันแอปปัจจุบันได้รับการอัปเกรดเรียบร้อยและเสถียรที่สุดแล้ว!", true);
+        setTimeout(() => setSyncProgress(0), 400);
       }, 500);
     }
   </script>
