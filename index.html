@@ -63,8 +63,47 @@
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-300 pb-28">
 
-  <!-- Tiny Unobtrusive Header Sync Progress Bar (แถบซิงค์แบบเงียบที่ด้านบนสุด ปราศจาก popup บัง) -->
+  <!-- Tiny Unobtrusive Header Sync Progress Bar -->
   <div id="syncProgressBar" class="h-1 bg-brand-500 w-full fixed top-0 left-0 z-50 transition-all duration-300 transform scale-x-0 origin-left"></div>
+
+  <!-- ================= PIN LOCK SCREEN ON STARTUP ================= -->
+  <div id="pinLockScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900 text-white hidden">
+    <div class="text-center space-y-6 max-w-xs w-full px-6">
+      <div class="w-16 h-16 rounded-3xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-400 mx-auto">
+        <span class="material-symbols-rounded text-3xl animate-pulse">lock</span>
+      </div>
+      <div class="space-y-1">
+        <h2 class="text-xl font-bold tracking-wide">กรุณาใส่รหัส PIN</h2>
+        <p class="text-xs text-slate-400">ระบุรหัส PIN 4 หลักเพื่อเข้าใช้งานกระเป๋าเงินของคุณ</p>
+      </div>
+      
+      <!-- PIN Dots -->
+      <div class="flex justify-center gap-4 py-2">
+        <div id="pin-dot-1" class="w-4 h-4 rounded-full border-2 border-slate-600 transition-all duration-150"></div>
+        <div id="pin-dot-2" class="w-4 h-4 rounded-full border-2 border-slate-600 transition-all duration-150"></div>
+        <div id="pin-dot-3" class="w-4 h-4 rounded-full border-2 border-slate-600 transition-all duration-150"></div>
+        <div id="pin-dot-4" class="w-4 h-4 rounded-full border-2 border-slate-600 transition-all duration-150"></div>
+      </div>
+
+      <!-- Keypad -->
+      <div class="grid grid-cols-3 gap-3">
+        <button onclick="pressPin('1')" class="h-14 bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-lg font-bold rounded-2xl btn-smooth">1</button>
+        <button onclick="pressPin('2')" class="h-14 bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-lg font-bold rounded-2xl btn-smooth">2</button>
+        <button onclick="pressPin('3')" class="h-14 bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-lg font-bold rounded-2xl btn-smooth">3</button>
+        <button onclick="pressPin('4')" class="h-14 bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-lg font-bold rounded-2xl btn-smooth">4</button>
+        <button onclick="pressPin('5')" class="h-14 bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-lg font-bold rounded-2xl btn-smooth">5</button>
+        <button onclick="pressPin('6')" class="h-14 bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-lg font-bold rounded-2xl btn-smooth">6</button>
+        <button onclick="pressPin('7')" class="h-14 bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-lg font-bold rounded-2xl btn-smooth">7</button>
+        <button onclick="pressPin('8')" class="h-14 bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-lg font-bold rounded-2xl btn-smooth">8</button>
+        <button onclick="pressPin('9')" class="h-14 bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-lg font-bold rounded-2xl btn-smooth">9</button>
+        <button onclick="clearPin()" class="h-14 bg-slate-800/30 text-xs font-bold rounded-xl flex items-center justify-center text-slate-400">ล้าง</button>
+        <button onclick="pressPin('0')" class="h-14 bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-lg font-bold rounded-2xl btn-smooth">0</button>
+        <button onclick="deletePinDigit()" class="h-14 bg-slate-800/30 text-slate-400 rounded-xl flex items-center justify-center">
+          <span class="material-symbols-rounded text-xl">backspace</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ================= LOGIN / REGISTER SCREEN (1 บัญชีต่ออุปกรณ์) ================= -->
   <div id="authScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 px-6 hidden">
@@ -115,7 +154,7 @@
             <h1 class="text-lg font-bold bg-gradient-to-r from-brand-600 to-emerald-500 dark:from-brand-400 dark:to-emerald-300 bg-clip-text text-transparent">Finsave</h1>
             <span class="material-symbols-rounded text-slate-400 text-sm transition-transform duration-200" id="menuArrowIcon">keyboard_arrow_right</span>
           </div>
-          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-semibold" id="headerDateTime">09/06/2026 19:50</p>
+          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-semibold" id="headerDateTime">11/06/2026 21:00</p>
         </div>
       </div>
       
@@ -265,7 +304,7 @@
 
           <div class="bg-slate-50 dark:bg-slate-950 px-4 py-3 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between">
             <span class="text-xs text-slate-400 font-medium">วันที่ทำรายการปัจจุบัน (อัตโนมัติ)</span>
-            <span id="transAutoDate" class="text-xs font-bold text-slate-600 dark:text-slate-300 font-mono">09/06/2026</span>
+            <span id="transAutoDate" class="text-xs font-bold text-slate-600 dark:text-slate-300 font-mono">11/06/2026</span>
           </div>
 
           <button type="submit" class="w-full py-3.5 bg-brand-500 hover:bg-brand-600 text-white rounded-2xl font-bold shadow-lg shadow-brand-500/10 hover:shadow-brand-500/20 btn-smooth flex items-center justify-center gap-1.5 mt-2 active:scale-95">
@@ -280,7 +319,6 @@
       <div class="bg-gradient-to-tr from-brand-900 to-indigo-950 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden border border-brand-800">
         <div class="absolute -right-10 -top-10 w-40 h-40 bg-brand-500/20 rounded-full blur-3xl"></div>
         <div class="flex items-center gap-4">
-          <!-- ไอคอนแสดงยศแบบพรีเมียม ไร้ Emoji -->
           <div id="rankBadgeContainer" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-yellow-400 to-amber-500 flex items-center justify-center text-white shadow-lg animate-bounce">
             <span class="material-symbols-rounded text-3xl" id="rankBadgeIcon">military_tech</span>
           </div>
@@ -451,23 +489,26 @@
             <span class="material-symbols-rounded text-slate-400">info</span>
             <div>
               <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 block">เวอร์ชันแอปพิเคชั่น</span>
-              <span class="text-[10px] text-slate-400">อัปเดต 09/06/2026</span>
+              <span class="text-[10px] text-slate-400">อัปเดต 11/06/2026</span>
             </div>
           </div>
-          <span class="text-xs font-bold text-brand-600 bg-brand-50 dark:bg-brand-950/40 px-2 py-1 rounded-lg">v2026.06.09</span>
+          <span class="text-xs font-bold text-brand-600 bg-brand-50 dark:bg-brand-950/40 px-2 py-1 rounded-lg">v2026.06.11</span>
         </div>
 
-        <!-- ระบบเปลี่ยนรหัสผ่านแอป PIN (จำกัด 1 ครั้งต่อวัน) -->
-        <button onclick="openChangePinModal()" class="w-full p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/30 text-left btn-smooth">
+        <!-- ระบบเปลี่ยนรหัสผ่านแอป PIN (จำกัดสิทธิ์ตั้งค่า 1 ครั้งถาวร) -->
+        <div class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/30 btn-smooth">
           <div class="flex items-center gap-3">
             <span class="material-symbols-rounded text-slate-400">lock</span>
             <div>
               <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 block">รหัสผ่านล็อกแอป (PIN)</span>
-              <span class="text-[10px] text-slate-400">จำกัดการเปลี่ยนรหัสผ่านได้สูงสุด 1 ครั้งต่อวัน</span>
+              <span class="text-[10px] text-slate-400" id="pinSettingDesc">จำกัดสิทธิ์การตั้งรหัสผ่านได้เพียง 1 ครั้งเท่านั้น</span>
             </div>
           </div>
-          <span class="material-symbols-rounded text-slate-400">lock_open</span>
-        </button>
+          <button id="btnChangePinTrigger" onclick="openChangePinModal()" class="px-3 py-1.5 bg-brand-500 hover:bg-brand-600 text-white text-[11px] font-bold rounded-lg btn-smooth flex items-center gap-1 active:scale-95">
+            <span class="material-symbols-rounded text-xs">add_moderator</span>
+            <span>ตั้งรหัส PIN</span>
+          </button>
+        </div>
 
         <!-- รีโหลดแอปใหม่ทั้งหมดเพื่อดึงข้อมูลสดๆ -->
         <button onclick="window.location.reload();" class="w-full p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/30 text-left btn-smooth">
@@ -578,7 +619,7 @@
           <span class="material-symbols-rounded text-sm">close</span>
         </button>
       </div>
-      <p class="text-xs text-slate-400">กรอกรหัส PIN ใหม่จำนวน 4 หลัก (เปลี่ยนได้สูงสุด 1 ครั้งต่อวัน)</p>
+      <p class="text-xs text-slate-400">ระบุรหัส PIN 4 หลักเพื่อความปลอดภัย รหัสนี้จะสามารถตั้งค่าได้เพียง "ครั้งเดียว" และจะไม่สามารถแก้ไขได้อีกในภายหลัง</p>
       
       <div class="space-y-3">
         <div>
@@ -589,12 +630,12 @@
 
       <div class="flex gap-2 pt-2">
         <button onclick="closeChangePinModal()" class="flex-1 py-2.5 border border-slate-200 dark:border-slate-800 text-xs font-bold rounded-xl btn-smooth text-slate-500">ยกเลิก</button>
-        <button onclick="submitChangePin()" class="flex-1 py-2.5 bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold rounded-xl btn-smooth">เปลี่ยนรหัสผ่าน</button>
+        <button onclick="submitChangePin()" class="flex-1 py-2.5 bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold rounded-xl btn-smooth">ยืนยันรหัส PIN</button>
       </div>
     </div>
   </div>
 
-  <!-- ================= CUSTOM CONFIRM DIALOG MODAL (ทดแทน popup ของบราวเซอร์เพื่อความเสถียรบน iFrame) ================= -->
+  <!-- ================= CUSTOM CONFIRM DIALOG MODAL ================= -->
   <div id="confirmModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm hidden px-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 text-center">
       <div class="w-12 h-12 rounded-full bg-rose-50 dark:bg-rose-950/30 text-rose-500 flex items-center justify-center mx-auto animate-pulse">
@@ -629,6 +670,10 @@
     let confirmPromiseResolver = null; 
     let slideMenuOpen = false;
 
+    // ตัวแปรล็อกแอป
+    let currentPinInput = "";
+    const PIN_LENGTH = 4;
+
     // ระบบจัดยศการออม (ใช้ Material Icons พรีเมียมแทน Emoji)
     const RANKS = [
       { min: 0, title: 'Bronze Saver', desc: 'ระดับเริ่มต้นก้าวสู่อิสรภาพการเงิน', icon: 'military_tech', color: 'from-amber-600 to-amber-700 text-amber-500' },
@@ -647,9 +692,10 @@
       
       checkUserSession();
       calculateSavingsEstimation();
+      updatePinUIState();
     };
 
-    // แสดงผลวันที่และเวลาระดับปัจจุบันให้ตรงตามความจริง (09/06/2026)
+    // แสดงผลวันที่และเวลาระดับปัจจุบันให้ตรงตามความจริง (11/06/2026)
     function updateDateTime() {
       const now = new Date();
       const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
@@ -695,7 +741,7 @@
       manualThemeOverride = true;
       const isCurrentlyDark = document.documentElement.classList.contains('dark');
       setThemeMode(!isCurrentlyDark);
-      showToast("สลับโหมดสีหน้าต่างเรียบร้อยแล้ว", true);
+      showToast("สลับโหมดการแสดงผลเรียบร้อยแล้ว", true);
     }
 
     // ================= MENUBAR SLIDEแนวนอน จากโลโก้ =================
@@ -715,17 +761,109 @@
       }
     }
 
-    // ================= SESSION AUTHENTICATION =================
+    // ================= SESSION AUTHENTICATION & PIN LOCK CHECK =================
     let isRegisterMode = false;
 
     function checkUserSession() {
       const sessionUser = localStorage.getItem('finsave_session_user');
       if (sessionUser) {
         appState.currentUser = JSON.parse(sessionUser);
-        document.getElementById('authScreen').classList.add('hidden');
-        syncData();
+        
+        // เช็คก่อนว่า User มีการตั้ง PIN ถาวรไว้หรือไม่
+        const pinKey = 'finsave_pin_' + appState.currentUser.username;
+        const savedPin = localStorage.getItem(pinKey);
+        
+        if (savedPin) {
+          document.getElementById('pinLockScreen').classList.remove('hidden');
+          currentPinInput = "";
+          updatePinDots();
+        } else {
+          document.getElementById('authScreen').classList.add('hidden');
+          syncData();
+        }
       } else {
         document.getElementById('authScreen').classList.remove('hidden');
+      }
+    }
+
+    // การป้อนรหัสผ่านล็อกแอป PIN
+    function pressPin(digit) {
+      if (currentPinInput.length < PIN_LENGTH) {
+        currentPinInput += digit;
+        updatePinDots();
+        
+        if (currentPinInput.length === PIN_LENGTH) {
+          setTimeout(verifyPin, 150);
+        }
+      }
+    }
+
+    function updatePinDots() {
+      for (let i = 1; i <= PIN_LENGTH; i++) {
+        const dot = document.getElementById(`pin-dot-${i}`);
+        if (currentPinInput.length >= i) {
+          dot.classList.remove('border-slate-600');
+          dot.classList.add('bg-brand-500', 'border-brand-500', 'scale-110');
+        } else {
+          dot.classList.add('border-slate-600');
+          dot.classList.remove('bg-brand-500', 'border-brand-500', 'scale-110');
+        }
+      }
+    }
+
+    function clearPin() {
+      currentPinInput = "";
+      updatePinDots();
+    }
+
+    function deletePinDigit() {
+      if (currentPinInput.length > 0) {
+        currentPinInput = currentPinInput.slice(0, -1);
+        updatePinDots();
+      }
+    }
+
+    function verifyPin() {
+      if (!appState.currentUser) return;
+      const pinKey = 'finsave_pin_' + appState.currentUser.username;
+      const savedPin = localStorage.getItem(pinKey);
+      
+      if (currentPinInput === savedPin) {
+        document.getElementById('pinLockScreen').classList.add('hidden');
+        document.getElementById('authScreen').classList.add('hidden');
+        showToast("ยินดีต้อนรับเข้าสู่ระบบ Finsave", true);
+        syncData();
+      } else {
+        showToast("รหัส PIN ไม่ถูกต้อง กรุณาลองใหม่", false);
+        clearPin();
+      }
+    }
+
+    // จัดการ UI ปุ่มเปลี่ยนรหัส PIN (เปิดสิทธิ์เพียง 1 ครั้งเท่านั้นตลอดชีพ)
+    function updatePinUIState() {
+      if (!appState.currentUser) return;
+      
+      const pinKey = 'finsave_pin_' + appState.currentUser.username;
+      const hasPin = localStorage.getItem(pinKey);
+      const descEl = document.getElementById('pinSettingDesc');
+      const btnEl = document.getElementById('btnChangePinTrigger');
+
+      if (hasPin) {
+        if (descEl) descEl.innerHTML = '<span class="text-emerald-500 font-bold flex items-center gap-1"><span class="material-symbols-rounded text-sm">verified_user</span>เปิดใช้งานระบบล็อก PIN ถาวรเรียบร้อยแล้ว</span>';
+        if (btnEl) {
+          btnEl.className = "px-3 py-1.5 bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 text-[11px] font-bold rounded-lg cursor-not-allowed flex items-center gap-1";
+          btnEl.innerHTML = '<span class="material-symbols-rounded text-xs">lock</span><span>เปิดใช้งานแล้ว</span>';
+          btnEl.disabled = true;
+          btnEl.onclick = null; // ปิดการเรียกฟังก์ชัน
+        }
+      } else {
+        if (descEl) descEl.innerText = "จำกัดสิทธิ์การตั้งรหัสผ่านได้เพียง 1 ครั้งเท่านั้น";
+        if (btnEl) {
+          btnEl.className = "px-3 py-1.5 bg-brand-500 hover:bg-brand-600 text-white text-[11px] font-bold rounded-lg btn-smooth flex items-center gap-1 active:scale-95";
+          btnEl.innerHTML = '<span class="material-symbols-rounded text-xs">add_moderator</span><span>ตั้งรหัส PIN</span>';
+          btnEl.disabled = false;
+          btnEl.onclick = openChangePinModal;
+        }
       }
     }
 
@@ -778,9 +916,20 @@
           appState.currentUser = { username: username };
           localStorage.setItem('finsave_session_user', JSON.stringify(appState.currentUser));
           
-          document.getElementById('authScreen').classList.add('hidden');
           document.getElementById('authForm').reset();
-          syncData();
+          
+          // ตรวจสอบระบบล็อก PIN หลังเข้าสู่ระบบสำเร็จ
+          const pinKey = 'finsave_pin_' + appState.currentUser.username;
+          const savedPin = localStorage.getItem(pinKey);
+          
+          if (savedPin) {
+            document.getElementById('pinLockScreen').classList.remove('hidden');
+            clearPin();
+          } else {
+            document.getElementById('authScreen').classList.add('hidden');
+            syncData();
+          }
+          updatePinUIState();
         } else {
           showToast(result.message || "เกิดข้อผิดพลาดในการตรวจสอบบัญชี", false);
         }
@@ -804,6 +953,16 @@
 
     // ================= PIN LOCK SYSTEM =================
     function openChangePinModal() {
+      if (!appState.currentUser) return;
+      const pinKey = 'finsave_pin_' + appState.currentUser.username;
+      const hasPin = localStorage.getItem(pinKey);
+      
+      // ป้องกันการแฮกเรียกฟังก์ชันผ่าน Developer Console
+      if (hasPin) {
+        showToast("คุณได้ตั้งค่ารหัส PIN ถาวรเรียบร้อยแล้วและไม่สามารถแก้ไขได้อีก", false);
+        return;
+      }
+
       document.getElementById('newAppPin').value = "";
       document.getElementById('pinChangeModal').classList.remove('hidden');
     }
@@ -812,26 +971,33 @@
       document.getElementById('pinChangeModal').classList.add('hidden');
     }
 
-    function submitChangePin() {
+    async function submitChangePin() {
       const newPin = document.getElementById('newAppPin').value;
       if (!newPin || newPin.length !== 4 || isNaN(newPin)) {
         showToast("กรุณากรอกรหัส PIN เป็นตัวเลข 4 หลักเท่านั้น", false);
         return;
       }
 
-      const todayStr = new Date().toDateString();
-      const lastChanged = localStorage.getItem('finsave_pin_last_changed');
+      if (!appState.currentUser) return;
+      const pinKey = 'finsave_pin_' + appState.currentUser.username;
+      const hasPin = localStorage.getItem(pinKey);
 
-      if (lastChanged === todayStr) {
-        showToast("คุณเปลี่ยนรหัสผ่านไปแล้วในวันนี้ สามารถเปลี่ยนได้สูงสุดวันละ 1 ครั้ง", false);
+      if (hasPin) {
+        showToast("ไม่สามารถแก้ไข PIN ถาวรได้อีกเพื่อความปลอดภัยสูงสุด", false);
         closeChangePinModal();
         return;
       }
 
-      localStorage.setItem('finsave_pin', newPin);
-      localStorage.setItem('finsave_pin_last_changed', todayStr);
-      showToast("เปลี่ยนรหัสผ่านล็อกแอปเรียบร้อยแล้ว", true);
+      const confirmed = await showCustomConfirm(
+        "ยืนยันการตั้งค่ารหัสผ่าน PIN",
+        "รหัสผ่านนี้จะเปิดใช้งานถาวรและ 'ไม่สามารถแก้ไขได้อีกในอนาคต' คุณยืนยันจะล็อกรหัสผ่านนี้เพื่อใช้งานใช่หรือไม่?"
+      );
+      if (!confirmed) return;
+
+      localStorage.setItem(pinKey, newPin);
+      showToast("เปิดใช้งานรหัส PIN ถาวรเสร็จสิ้น", true);
       closeChangePinModal();
+      updatePinUIState();
     }
 
     // ================= CUSTOM CONFIRM DIALOG SYSTEM =================
@@ -855,7 +1021,6 @@
 
     // ================= INSTANT ROUTING (ปราศจากหน้าโหลดค้าง) =================
     function switchPage(pageId, optionalParam = '') {
-      // ทำการสลับหน้าในทันที โดยไม่มี Loading Screen บดบังองค์ประกอบ
       const sections = ['dashboard', 'save-transaction', 'ranks', 'goals', 'history', 'analytics', 'profile'];
       sections.forEach(sec => {
         const el = document.getElementById(`page-${sec}`);
@@ -957,18 +1122,19 @@
           } else {
             generateSampleData();
             updateUIRender();
-            showToast("ยินดีต้อนรับ! ยินดีต้อนรับสร้างบัญชีใช้งาน Finsave", true);
+            showToast("ยินดีต้อนรับสร้างบัญชีใช้งาน Finsave", true);
           }
         })
         .finally(() => {
           setTimeout(() => setSyncProgress(0), 400);
           if (syncIcon) syncIcon.classList.remove('animate-spin');
+          updatePinUIState();
         });
     }
 
     function generateSampleData() {
       appState.savings = [
-        { id: '1', type: 'income', amount: 500, note: 'หยอดกระปุกเริ่มต้นใช้งานแอปพลิเคชัน', date: '09/06/2026' }
+        { id: '1', type: 'income', amount: 500, note: 'หยอดกระปุกเริ่มต้นใช้งานแอปพลิเคชัน', date: '11/06/2026' }
       ];
       appState.goals = [
         { id: 'g1', name: 'ซื้อไอโฟนรุ่นใหม่', target: 35000, current: 5000, status: 'active' }
@@ -1114,7 +1280,6 @@
         date: dateStr
       };
 
-      // ทำการอัปเดตข้อมูลขึ้นหน้าจอทันที (Instant UI Update) เพื่อหลีกเลี่ยงความหน่วงของเซิร์ฟเวอร์
       appState.savings.unshift(newTransaction);
       localStorage.setItem('finsave_backup_' + appState.currentUser.username, JSON.stringify(appState));
       updateUIRender();
@@ -1139,13 +1304,11 @@
       );
       if (!confirmed) return;
 
-      // ลบจากตัวแปร State ทันทีเพื่อให้แสดงผลในบัดดล
       appState.savings = appState.savings.filter(t => t.id !== id);
       localStorage.setItem('finsave_backup_' + appState.currentUser.username, JSON.stringify(appState));
       updateUIRender();
       showToast("ลบข้อมูลธุรกรรมเรียบร้อยแล้ว", true);
 
-      // ค่อยนำไปลบเบื้องหลังที่คลาวด์แบบเงียบเชียบ
       sendDataToServer('deleteSavings', { id })
         .catch(err => {
           console.warn("การลบบนเซิร์ฟเวอร์ไม่สำเร็จชั่วคราว ข้อมูลในอุปกรณ์ลบเสร็จสิ้นแล้ว", err);
@@ -1421,7 +1584,7 @@
       let updatedStatus = oldObj.status;
       if (newCurrent >= oldObj.target) {
         newCurrent = oldObj.target;
-        updatedStatus = 'completed'; // ปรับปรุงเข้าประวัติรายการเป้าหมายเสร็จสิ้นอัตโนมัติ
+        updatedStatus = 'completed';
       }
 
       const updatedPayload = {
@@ -1533,7 +1696,6 @@
       const ctx = document.getElementById('weeklyChart');
       if (!ctx) return;
 
-      // จัดสเกลและแบ่งสันปันข้อมูลลงวัน จันทร์-อาทิตย์ ให้ตรงความจริงในปัจจุบัน 2026/2569
       let weeklyData = { 'จ.': 0, 'อ.': 0, 'พ.': 0, 'พฤ.': 0, 'ศ.': 0, 'ส.': 0, 'อา.': 0 };
       
       appState.savings.forEach(t => {
