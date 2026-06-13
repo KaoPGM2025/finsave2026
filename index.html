@@ -105,7 +105,7 @@
     </div>
   </div>
 
-  <!-- ================= LOGIN / REGISTER SCREEN (1 บัญชีต่อบราวเซอร์อุปกรณ์) ================= -->
+  <!-- ================= LOGIN / REGISTER SCREEN (1 บัญชีต่ออุปกรณ์) ================= -->
   <div id="authScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 px-6 hidden">
     <div class="w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-2xl space-y-6">
       <div class="text-center space-y-2">
@@ -144,7 +144,7 @@
   <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 dark:border-slate-800/80 glass-effect transition-all">
     <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between relative">
       
-      <!-- เมนูเปิด/ปิดแนวตั้ง แตะที่โลโก้ สไลด์เมนูจะสไลด์แบบหรูหราแนวนอน -->
+      <!-- โลโก้ และ ระบบเมนูสไลด์เปิด/ปิด -->
       <div onclick="toggleSlideMenu()" class="flex items-center gap-2 cursor-pointer select-none active:scale-95 transition-transform duration-150">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
           <span class="material-symbols-rounded text-2xl">account_balance_wallet</span>
@@ -154,12 +154,12 @@
             <h1 class="text-lg font-bold bg-gradient-to-r from-brand-600 to-emerald-500 dark:from-brand-400 dark:to-emerald-300 bg-clip-text text-transparent">Finsave</h1>
             <span class="material-symbols-rounded text-slate-400 text-sm transition-transform duration-200" id="menuArrowIcon">keyboard_arrow_right</span>
           </div>
-          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-semibold" id="headerDateTime">12/06/2026 --:--</p>
+          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-semibold" id="headerDateTime">13/06/2026 --:--</p>
         </div>
       </div>
       
-      <!-- เมนูสไลด์แนวนอนสไลด์ออกจากตัวโลโก้ ไม่บังส่วนอื่นๆ -->
-      <div id="horizontalSlideMenu" class="absolute left-36 right-28 top-1/2 -translate-y-1/2 h-10 bg-white/95 dark:bg-slate-900/95 border border-slate-200/50 dark:border-slate-800/50 rounded-xl flex items-center px-2 gap-1.5 menu-slide opacity-0 pointer-events-none -translate-x-4 shadow-md overflow-x-auto no-scrollbar">
+      <!-- เมนูสไลด์แนวนอน เลื่อนออกด้านขวาของโลโก้ -->
+      <div id="horizontalSlideMenu" class="absolute left-36 right-36 top-1/2 -translate-y-1/2 h-10 bg-white/95 dark:bg-slate-900/95 border border-slate-200/50 dark:border-slate-800/50 rounded-xl flex items-center px-2 gap-1.5 menu-slide opacity-0 pointer-events-none -translate-x-4 shadow-md overflow-x-auto no-scrollbar">
         <button onclick="switchPage('dashboard'); toggleSlideMenu();" class="p-1.5 text-slate-500 hover:text-brand-500 rounded-lg transition-colors" title="หน้าแรก">
           <span class="material-symbols-rounded text-lg">grid_view</span>
         </button>
@@ -174,9 +174,14 @@
         </button>
       </div>
       
-      <!-- ตัวสลับโหมด Day/Night และปุ่มรีโหลดข้อมูลด่วนข้างกัน -->
+      <!-- สลับโหมด Day/Night, ปุ่มรีโหลดข้อมูลด่วน และกระดิ่งแจ้งเตือน -->
       <div class="flex items-center gap-1.5">
-        <button onclick="syncData(true)" class="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-900 hover:bg-brand-50 dark:hover:bg-brand-950/30 text-slate-600 dark:text-slate-300 hover:text-brand-500 btn-smooth active:scale-95" title="รีโหลดข้อมูลด่วน">
+        <!-- ปุ่มกระดิ่งแจ้งเตือนจากผู้ดูแลระบบ -->
+        <button onclick="openAnnouncementsModal()" class="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-900 hover:bg-brand-50 dark:hover:bg-brand-950/30 text-slate-600 dark:text-slate-300 hover:text-brand-500 btn-smooth active:scale-95 relative" title="การแจ้งเตือนและประกาศ">
+          <span class="material-symbols-rounded text-xl">notifications</span>
+          <span id="notificationBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full hidden"></span>
+        </button>
+        <button onclick="syncData(true)" class="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-900 hover:bg-brand-50 dark:hover:bg-brand-950/30 text-slate-600 dark:text-slate-300 hover:text-brand-500 btn-smooth active:scale-95" title="รีโหลดข้อมูลใหม่">
           <span class="material-symbols-rounded text-xl" id="syncIcon">sync</span>
         </button>
         <button onclick="toggleThemeManually()" id="themeIndicator" class="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-900 text-amber-500 dark:text-indigo-400 font-semibold btn-smooth active:scale-95" title="สลับโหมดแสงสี">
@@ -304,7 +309,7 @@
 
           <div class="bg-slate-50 dark:bg-slate-950 px-4 py-3 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between">
             <span class="text-xs text-slate-400 font-medium">วันที่ทำรายการปัจจุบัน (อัตโนมัติ)</span>
-            <span id="transAutoDate" class="text-xs font-bold text-slate-600 dark:text-slate-300 font-mono">12/06/2026</span>
+            <span id="transAutoDate" class="text-xs font-bold text-slate-600 dark:text-slate-300 font-mono">13/06/2026</span>
           </div>
 
           <button type="submit" class="w-full py-3.5 bg-brand-500 hover:bg-brand-600 text-white rounded-2xl font-bold shadow-lg shadow-brand-500/10 hover:shadow-brand-500/20 btn-smooth flex items-center justify-center gap-1.5 mt-2 active:scale-95">
@@ -491,7 +496,7 @@
               <span class="text-[10px] text-slate-400 font-semibold">อัปเดตระบบ FinsavePro+ ประจำปี 2026</span>
             </div>
           </div>
-          <span class="text-xs font-bold text-brand-600 bg-brand-50 dark:bg-brand-950/40 px-2 py-1 rounded-lg">v2026.06.12</span>
+          <span class="text-xs font-bold text-brand-600 bg-brand-50 dark:bg-brand-950/40 px-2 py-1 rounded-lg">v2026.06.13</span>
         </div>
 
         <!-- ระบบเปลี่ยนรหัสผ่านแอป PIN (จำกัดสิทธิ์ตั้งค่าได้ 1 ครั้ง ตลอดชีพ) -->
@@ -635,6 +640,33 @@
     </div>
   </div>
 
+  <!-- ================= POPUP MODAL (ประกาศและแจ้งเตือนจากแอดมิน) ================= -->
+  <div id="announcementsModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm hidden px-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-sm rounded-3xl p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h4 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+          <span class="material-symbols-rounded text-brand-500">notifications_active</span>
+          <span>ข่าวสารและประกาศแจ้งเตือน</span>
+        </h4>
+        <button onclick="closeAnnouncementsModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-600">
+          <span class="material-symbols-rounded text-sm">close</span>
+        </button>
+      </div>
+      <p class="text-[11px] text-slate-400">ข่าวสารล่าสุดและแจ้งเตือนอัปเดตระบบจากผู้ดูแลระบบ</p>
+      
+      <div class="space-y-3 max-h-60 overflow-y-auto no-scrollbar" id="announcementsList">
+        <!-- รายการประกาศจะถูกนำมาสร้างที่นี่โดย JS -->
+        <div class="text-center py-6 text-xs text-slate-400">ยังไม่มีประกาศหรือการแจ้งเตือนใด ๆ ในขณะนี้</div>
+      </div>
+
+      <div class="pt-2">
+        <button onclick="closeAnnouncementsModal()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl btn-smooth">
+          รับทราบและปิดหน้าต่าง
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= CUSTOM CONFIRM DIALOG MODAL ================= -->
   <div id="confirmModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm hidden px-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 text-center">
@@ -659,7 +691,8 @@
     let appState = {
       currentUser: null, 
       savings: [], 
-      goals: []
+      goals: [],
+      announcements: [] // รายการประกาศดึงจาก Google Sheet
     };
 
     let activeSaveTab = 'income'; 
@@ -695,7 +728,7 @@
       updatePinUIState();
     };
 
-    // อัปเดตแสดงวันที่และเวลาปัจจุบันของระบบ
+    // อัปเดตแสดงวันที่และเวลาปัจจุบันของระบบ (13/06/2026)
     function updateDateTime() {
       const now = new Date();
       const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
@@ -950,6 +983,7 @@
       appState.currentUser = null;
       appState.savings = [];
       appState.goals = [];
+      appState.announcements = [];
       document.getElementById('authScreen').classList.remove('hidden');
       switchPage('dashboard');
     }
@@ -1000,6 +1034,50 @@
       showToast("เปิดใช้งานรหัส PIN ล็อกถาวรเสร็จสิ้น", true);
       closeChangePinModal();
       updatePinUIState();
+    }
+
+    // ================= ANNOUNCEMENTS SYSTEM (กระดิ่งประกาศแจ้งเตือน) =================
+    function openAnnouncementsModal() {
+      renderAnnouncementsList();
+      document.getElementById('announcementsModal').classList.remove('hidden');
+      
+      // เมื่อกดอ่านแล้วให้นำจุดแดงแจ้งเตือน Badge ออก
+      const badge = document.getElementById('notificationBadge');
+      if (badge) badge.classList.add('hidden');
+    }
+
+    function closeAnnouncementsModal() {
+      document.getElementById('announcementsModal').classList.add('hidden');
+    }
+
+    function renderAnnouncementsList() {
+      const container = document.getElementById('announcementsList');
+      if (!container) return;
+
+      if (!appState.announcements || appState.announcements.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-xs text-slate-400">
+            <span class="material-symbols-rounded text-3xl block mb-2 text-slate-300 dark:text-slate-700">campaign</span>
+            ยังไม่มีประกาศหรือการแจ้งเตือนจากผู้ดูแลระบบในขณะนี้
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = "";
+      appState.announcements.forEach(announce => {
+        const item = document.createElement('div');
+        item.className = "p-3.5 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl space-y-1.5 transition-all hover:border-brand-500/30";
+        item.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/40 px-2 py-0.5 rounded-md">ประกาศสำคัญ</span>
+            <span class="text-[9px] text-slate-400 font-mono">${announce.date || ''}</span>
+          </div>
+          <h5 class="text-xs font-bold text-slate-800 dark:text-slate-200">${announce.title}</h5>
+          <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">${announce.message}</p>
+        `;
+        container.appendChild(item);
+      });
     }
 
     // ================= CUSTOM CONFIRM DIALOG SYSTEM =================
@@ -1100,11 +1178,19 @@
           if (data && data.success) {
             appState.savings = data.savings || [];
             appState.goals = data.goals || [];
+            appState.announcements = data.announcements || [];
             
             localStorage.setItem('finsave_backup_' + appState.currentUser.username, JSON.stringify(appState));
             
             updateUIRender();
             setSyncProgress(100);
+
+            // แสดงไฟ Badge แจ้งเตือนสีแดงหากพบบันทึกประกาศแอดมินใหม่
+            const badge = document.getElementById('notificationBadge');
+            if (badge && appState.announcements.length > 0) {
+              badge.classList.remove('hidden');
+            }
+
             if (isManual) {
               showToast("ประสานงานและดึงข้อมูลอัปเดตออนไลน์เสร็จสิ้นเรียบร้อย!", true);
             }
@@ -1119,6 +1205,7 @@
             const parsed = JSON.parse(backup);
             appState.savings = parsed.savings || [];
             appState.goals = parsed.goals || [];
+            appState.announcements = parsed.announcements || [];
             updateUIRender();
             showToast("สลับเข้าสู่การใช้งานโหมดออฟไลน์เพื่อความต่อเนื่อง", true);
           } else {
@@ -1136,10 +1223,13 @@
 
     function generateSampleData() {
       appState.savings = [
-        { id: '1', type: 'income', amount: 500, note: 'หยอดกระปุกเริ่มต้นสร้างวินัยทางการเงิน', date: '12/06/2026' }
+        { id: '1', type: 'income', amount: 500, note: 'หยอดกระปุกเริ่มต้นสร้างวินัยทางการเงิน', date: '13/06/2026' }
       ];
       appState.goals = [
         { id: 'g1', name: 'ซื้อไอโฟนเครื่องใหม่', target: 35000, current: 5000, status: 'active' }
+      ];
+      appState.announcements = [
+        { title: 'ยินดีต้อนรับสู่เวอร์ชันใหม่!', message: 'ยินดีต้อนรับผู้ใช้งานเข้าสู่กระเป๋าเก็บเงิน FinsavePro+ อัปเดตฟีเจอร์ความปลอดภัยล็อกแอปเรียบร้อย', date: '13/06/2026' }
       ];
     }
 
@@ -1292,7 +1382,7 @@
 
       sendDataToServer('addSavings', newTransaction)
         .then(() => {
-          showToast(activeSaveTab === 'income' ? "บันทึกออมเงินสำเร็จ!" : "บันทึกรายจ่ายสำเร็จ!", true);
+          showToast(activeSaveTab === 'income' ? "บันทึกการออมเงินสำเร็จ!" : "บันทึกรายจ่ายสำเร็จ!", true);
         })
         .catch(() => {
           showToast("ทำรายการออฟไลน์สำเร็จ และจะส่งข้อมูลเข้าเซิร์ฟเวอร์เมื่อออนไลน์", true);
