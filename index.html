@@ -154,7 +154,7 @@
             <h1 class="text-lg font-bold bg-gradient-to-r from-brand-600 to-emerald-500 dark:from-brand-400 dark:to-emerald-300 bg-clip-text text-transparent">Finsave</h1>
             <span class="material-symbols-rounded text-slate-400 text-sm transition-transform duration-200" id="menuArrowIcon">keyboard_arrow_right</span>
           </div>
-          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-semibold" id="headerDateTime">13/06/2026 --:--</p>
+          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-semibold" id="headerDateTime">14/06/2026 --:--</p>
         </div>
       </div>
       
@@ -201,7 +201,7 @@
       <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-brand-950 text-white p-6 shadow-xl shadow-slate-950/20 border border-slate-800">
         <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl"></div>
         <div class="absolute right-4 top-4 bg-white/10 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider backdrop-blur-sm border border-white/5 flex items-center gap-1">
-          <span class="w-2 h-2 rounded-full bg-brand-400 animate-pulse"></span>ฐานข้อมูลหลัก
+          <span class="material-symbols-rounded text-xs text-brand-400">cloud_done</span>ออนไลน์
         </div>
         <p class="text-xs text-slate-400 font-medium tracking-wide">ยอดเงินออมสะสมสุทธิทั้งหมด (หลังหักรายจ่าย)</p>
         <div class="text-4xl font-extrabold tracking-tight mt-1 mb-4 font-mono flex items-baseline">
@@ -309,7 +309,7 @@
 
           <div class="bg-slate-50 dark:bg-slate-950 px-4 py-3 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between">
             <span class="text-xs text-slate-400 font-medium">วันที่ทำรายการปัจจุบัน (อัตโนมัติ)</span>
-            <span id="transAutoDate" class="text-xs font-bold text-slate-600 dark:text-slate-300 font-mono">13/06/2026</span>
+            <span id="transAutoDate" class="text-xs font-bold text-slate-600 dark:text-slate-300 font-mono">14/06/2026</span>
           </div>
 
           <button type="submit" class="w-full py-3.5 bg-brand-500 hover:bg-brand-600 text-white rounded-2xl font-bold shadow-lg shadow-brand-500/10 hover:shadow-brand-500/20 btn-smooth flex items-center justify-center gap-1.5 mt-2 active:scale-95">
@@ -496,7 +496,7 @@
               <span class="text-[10px] text-slate-400 font-semibold">อัปเดตระบบ FinsavePro+ ประจำปี 2026</span>
             </div>
           </div>
-          <span class="text-xs font-bold text-brand-600 bg-brand-50 dark:bg-brand-950/40 px-2 py-1 rounded-lg">v2026.06.13</span>
+          <span class="text-xs font-bold text-brand-600 bg-brand-50 dark:bg-brand-950/40 px-2 py-1 rounded-lg">v2026.06.14</span>
         </div>
 
         <!-- ระบบเปลี่ยนรหัสผ่านแอป PIN (จำกัดสิทธิ์ตั้งค่าได้ 1 ครั้ง ตลอดชีพ) -->
@@ -866,7 +866,7 @@
         showToast("ยินดีต้อนรับเข้าใช้งาน FinsavePro+", true);
         syncData();
       } else {
-        showToast("รหัส PIN ล็อกแอปไม่ถูกต้อง กรุณากรอกใหม่อีกครั้ง", false);
+        showToast("รหัส PIN ไม่ถูกต้อง กรุณากรอกใหม่อีกครั้ง", false);
         clearPin();
       }
     }
@@ -1222,13 +1222,13 @@
 
     function generateSampleData() {
       appState.savings = [
-        { id: '1', type: 'income', amount: 500, note: 'หยอดกระปุกเริ่มต้นสร้างวินัยทางการเงิน', date: '13/06/2026' }
+        { id: '1', type: 'income', amount: 500, note: 'หยอดกระปุกเริ่มต้นสร้างวินัยทางการเงิน', date: '14/06/2026' }
       ];
       appState.goals = [
         { id: 'g1', name: 'ซื้อไอโฟนเครื่องใหม่', target: 35000, current: 5000, status: 'active' }
       ];
       appState.announcements = [
-        { title: 'ยินดีต้อนรับเข้าใช้งาน FinsavePro+ !', message: 'คุณลักษณะและสิทธิ์ความปลอดภัยถาวรได้รับการตั้งค่าแล้ว แตะกระดิ่งเพื่ออ่านข้อความหลังบ้านได้ตลอดเวลา', date: '13/06/2026' }
+        { title: 'ยินดีต้อนรับเข้าใช้งาน FinsavePro+ !', message: 'คุณลักษณะและสิทธิ์ความปลอดภัยถาวรได้รับการตั้งค่าแล้ว แตะกระดิ่งเพื่ออ่านข้อความหลังบ้านได้ตลอดเวลา', date: '14/06/2026' }
       ];
     }
 
@@ -1323,7 +1323,9 @@
         dbGoalContainer.innerHTML = `
           <div class="text-center py-4">
             <p class="text-xs text-slate-400">ไม่มีเป้าหมายที่อยู่ระหว่างดำเนินการ</p>
-            <button onclick="switchPage('goals')" class="mt-2 text-[10px] font-bold text-brand-500 hover:underline">คลิกตรงนี้เพื่อตั้งเป้าหมายทางการเงิน</button>
+            <button onclick="switchPage('goals')" class="mt-2 text-[10px] font-bold text-brand-500 hover:underline flex items-center justify-center gap-1 mx-auto">
+              <span class="material-symbols-rounded text-sm">add_circle</span>ตั้งเป้าหมายทางการเงิน
+            </button>
           </div>
         `;
       }
@@ -1463,7 +1465,7 @@
       if (list.length === 0) {
         container.innerHTML = `
           <div class="text-center py-8 text-xs text-slate-400">
-            <span class="material-symbols-rounded text-3xl block mb-2">find_in_page</span>
+            <span class="material-symbols-rounded text-3xl block mb-2 text-slate-300 dark:text-slate-700">find_in_page</span>
             ไม่พบข้อมูลประวัติธุรกรรมใดๆ ในระบบ
           </div>
         `;
