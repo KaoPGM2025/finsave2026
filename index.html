@@ -77,12 +77,12 @@
         <p class="text-sm text-slate-300 leading-relaxed">
           ระบบพักการทำงานชั่วคราวระหว่างเวลา <b class="text-white font-mono">23:00 น. ถึง 00:10 น.</b> เพื่อประมวลผลฐานข้อมูลและบำรุงรักษาเสถียรภาพระบบคลาวด์
         </p>
-        <p class="text-xs text-slate-500">ระบบจะเปิดให้กดทำงานเป็นปกติหลังเวลา 00:10 น. โดยอัตโนมัติ</p>
+        <p class="text-xs text-slate-500">ระบบจะกลับมาทำงานเป็นปกติและเปิดให้กดใช้งานอีกครั้งหลังเวลา 00:10 น.</p>
       </div>
     </div>
   </div>
 
-  <!-- ================= PIN LOCK SCREEN ================= -->
+  <!-- ================= PIN LOCK SCREEN (ล็อกเมื่อมี PIN ผูกกับบัญชี) ================= -->
   <div id="pinLockScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900 text-white hidden">
     <div class="text-center space-y-6 max-w-xs w-full px-6">
       <div class="w-16 h-16 rounded-3xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-400 mx-auto">
@@ -90,7 +90,7 @@
       </div>
       <div class="space-y-1">
         <h2 class="text-xl font-bold tracking-wide">Finsave Secure PIN</h2>
-        <p class="text-xs text-slate-400">ป้อนรหัสผ่านล็อกแอป 4 หลักเพื่อความปลอดภัยของบัญชีท่าน</p>
+        <p class="text-xs text-slate-400">ป้อนรหัสผ่านล็อกแอป 4 หลักเพื่อเข้าใช้งานกระเป๋าเงิน</p>
       </div>
       
       <!-- PIN Indicators -->
@@ -101,7 +101,7 @@
         <div id="pin-dot-4" class="w-4 h-4 rounded-full border-2 border-slate-600 transition-all duration-150"></div>
       </div>
 
-      <!-- คีย์บอร์ดปุ่มกดสมูทปลอดภัย -->
+      <!-- คีย์บอร์ดสมูทพรีเมียม -->
       <div class="grid grid-cols-3 gap-3">
         <button onclick="pressPin('1')" class="h-14 bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-lg font-bold rounded-2xl btn-smooth">1</button>
         <button onclick="pressPin('2')" class="h-14 bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-lg font-bold rounded-2xl btn-smooth">2</button>
@@ -121,7 +121,7 @@
     </div>
   </div>
 
-  <!-- ================= LOGIN / REGISTER SCREEN (1 บัญชีต่ออุปกรณ์) ================= -->
+  <!-- ================= LOGIN / REGISTER SCREEN (1 บัญชีผู้ใช้ต่ออุปกรณ์) ================= -->
   <div id="authScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 px-6 hidden">
     <div class="w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-2xl space-y-6">
       <div class="text-center space-y-2">
@@ -160,29 +160,29 @@
   <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 dark:border-slate-800/80 glass-effect transition-all">
     <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between relative">
       
-      <!-- โลโก้ และข้อความทักทายชื่อผู้ใช้งาน -->
-      <div class="flex items-center gap-2 select-none transition-transform duration-150">
+      <!-- โลโก้ และข้อความทักทายสวัสดีคุณผู้ใช้จริง (แทนที่ปุ่มควบคุมเก่าทั้ง 4 ปุ่ม) -->
+      <div class="flex items-center gap-2 select-none">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
           <span class="material-symbols-rounded text-2xl">account_balance_wallet</span>
         </div>
         <div>
           <div class="flex items-baseline gap-1.5">
             <h1 class="text-lg font-bold bg-gradient-to-r from-brand-600 to-emerald-500 dark:from-brand-400 dark:to-emerald-300 bg-clip-text text-transparent">Finsave</h1>
-            <span id="greetingText" class="text-xs font-semibold text-slate-500 dark:text-slate-400 truncate max-w-[120px]">สวัสดีคุณผู้ใช้</span>
+            <span id="greetingText" class="text-xs font-bold text-slate-500 dark:text-slate-400 truncate max-w-[140px]">สวัสดีคุณผู้ใช้</span>
           </div>
           <p class="text-[9px] text-slate-400 dark:text-slate-500 font-semibold" id="headerDateTime">18/06/2026 --:--</p>
         </div>
       </div>
       
-      <!-- เมนูปุ่มกดด้านขวาบนของ Header -->
+      <!-- เมนูควบคุมขวาบน (สวิตช์โหมด และ กระดิ่งแจ้งเตือน) -->
       <div class="flex items-center gap-1.5">
         <!-- ปุ่มกระดิ่งแจ้งเตือนประกาศจาก Admin ใน Apps Script -->
-        <button onclick="openAnnouncementsModal()" class="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-900 hover:bg-brand-50 dark:hover:bg-brand-950/30 text-slate-600 dark:text-slate-300 hover:text-brand-500 btn-smooth active:scale-95 relative" title="การแจ้งเตือนและประกาศ">
+        <button onclick="openAnnouncementsModal()" class="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-900 hover:bg-brand-50 dark:hover:bg-brand-950/30 text-slate-600 dark:text-slate-300 hover:text-brand-500 btn-smooth active:scale-95 relative" title="ประกาศแจ้งเตือน">
           <span class="material-symbols-rounded text-xl">notifications</span>
           <span id="notificationBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full hidden"></span>
         </button>
         <!-- ปุ่มสลับโหมดแสงสี -->
-        <button onclick="toggleThemeManually()" id="themeIndicator" class="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-900 text-amber-500 dark:text-indigo-400 font-semibold btn-smooth active:scale-95" title="สลับโหมดแสงสี">
+        <button onclick="toggleThemeManually()" id="themeIndicator" class="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-900 text-amber-500 dark:text-indigo-400 font-semibold btn-smooth active:scale-95" title="สลับโหมดสว่าง/มืด">
           <span class="material-symbols-rounded text-xl" id="themeIcon">wb_sunny</span>
         </button>
       </div>
@@ -195,7 +195,7 @@
     <!-- ================= SECTION 1: DASHBOARD (หน้าหลัก) ================= -->
     <section id="page-dashboard" class="space-y-6">
       
-      <!-- การ์ดสรุปยอดเงินสะสมดิบ & รายจ่ายรวม ไร้เออเร่อ -->
+      <!-- การ์ดเงินสะสมดิบ & รายจ่ายรวม ไร้เออเร่อ -->
       <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-brand-950 text-white p-6 shadow-xl shadow-slate-950/20 border border-slate-800">
         <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl"></div>
         <div class="absolute right-4 top-4 bg-white/10 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider backdrop-blur-sm border border-white/5 flex items-center gap-1">
@@ -255,7 +255,7 @@
         </div>
       </div>
 
-      <!-- แสดงเป้าหมายล่าสุด -->
+      <!-- แสดงเป้าหมายความสำเร็จล่าสุด -->
       <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-2xl space-y-4 shadow-sm">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
@@ -269,9 +269,9 @@
       </div>
     </section>
 
-    <!-- ================= SECTION 2: บันทึกออมเงินอย่างเดียว ================= -->
+    <!-- ================= SECTION 2: บันทึกออมเงินอย่างเดียว (เอาส่วนรายจ่ายออก) ================= -->
     <section id="page-save-transaction" class="hidden space-y-6">
-      <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-3xl shadow-sm space-y-6">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200/60 p-5 rounded-3xl shadow-sm space-y-6">
         
         <div class="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
           <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
@@ -323,7 +323,7 @@
           <div>
             <span class="text-[10px] text-brand-300 font-bold uppercase tracking-wider">ยศการออมปัจจุบัน</span>
             <h2 id="currentRankTitle" class="text-2xl font-black tracking-wide text-amber-300">กำลังประมวลผล...</h2>
-            <p class="text-xs text-slate-300 mt-0.5">ยอดเงินออมรวมดิบกำหนดระดับชั้นยศ</p>
+            <p class="text-xs text-slate-300 mt-0.5">ยอดรวมเงินออมดิบกำหนดระดับชั้นยศ</p>
           </div>
         </div>
         
@@ -394,7 +394,7 @@
       <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 rounded-3xl shadow-sm divide-y divide-slate-100 dark:divide-slate-800/60 overflow-hidden" id="historyList"></div>
     </section>
 
-    <!-- ================= SECTION 6: ANALYTICS ================= -->
+    <!-- ================= SECTION 6: ANALYTICS (สถิติจันทร์-อาทิตย์ และความสำเร็จของเป้าหมาย) ================= -->
     <section id="page-analytics" class="hidden space-y-6">
       
       <!-- แผนภูมิสถิติจันทร์-อาทิตย์ -->
@@ -562,7 +562,7 @@
       </div>
     </section>
 
-    <!-- ================= SECTION 8: MORE ================= -->
+    <!-- ================= SECTION 8: MORE (หน้าฟังก์ชันเสริมอื่นๆ) ================= -->
     <section id="page-more" class="hidden space-y-6">
       <div class="space-y-4">
         <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">ฟังก์ชันการจัดการระบบคลัง</h3>
@@ -848,6 +848,10 @@
     let confirmPromiseResolver = null; 
     let slideMenuOpen = false;
 
+    // ตัวแปรล็อกแอป PIN
+    let currentPinInput = "";
+    const PIN_LENGTH = 4;
+
     // รายการเมนูที่รองรับการทำรายการโปรด
     const FAVORITE_ITEMS = [
       { id: 'save-transaction', title: 'บันทึกยอดออม', icon: 'add_circle', color: 'bg-emerald-500' },
@@ -865,7 +869,7 @@
       { min: 500, title: 'Silver Saver', desc: 'เริ่มออมเงินอย่างมีระเบียบวินัยสม่ำเสมอ', icon: 'workspace_premium', color: 'from-slate-400 to-slate-500 text-slate-400' },
       { min: 2000, title: 'Gold Saver', desc: 'สะสมออมเงินทองเป็นปึกแผ่นมั่นคง', icon: 'stars', color: 'from-yellow-400 to-amber-500 text-yellow-500' },
       { min: 10000, title: 'Platinum Saver', desc: 'สิงห์นักออมชั้นยอดที่มีการวางแผนอัจฉริยะ', icon: 'diamond', color: 'from-blue-400 to-indigo-500 text-blue-400' },
-      { min: 50000, title: 'Wealth Master', desc: 'ปรมาจารย์สะสมความมั่งคั่งและคุมรายจ่ายสมบูรณ์แบบ', icon: 'crown', color: 'from-purple-500 to-indigo-700 text-purple-400' },
+      { min: 50000, title: 'Wealth Master', desc: 'ปรมาจารย์สร้างสินทรัพย์และคุมรายจ่ายสมบูรณ์แบบ', icon: 'crown', color: 'from-purple-500 to-indigo-700 text-purple-400' },
       { min: 100000, title: 'Galactic Legend', desc: 'ระดับตำนานสูงสุดของผู้พิชิตอิสรภาพทางการเงิน', icon: 'rocket_launch', color: 'from-brand-500 to-cyan-500 text-emerald-400' }
     ];
 
@@ -896,9 +900,9 @@
       const isLocked = (hour === 23) || (hour === 0 && min <= 10);
       
       if (isLocked) {
-        maintenanceEl.classList.remove('hidden');
+        if (maintenanceEl) maintenanceEl.classList.remove('hidden');
       } else {
-        maintenanceEl.classList.add('hidden');
+        if (maintenanceEl) maintenanceEl.classList.add('hidden');
       }
     }
 
@@ -976,7 +980,7 @@
       if (sessionUser) {
         appState.currentUser = JSON.parse(sessionUser);
         
-        // เช็คการตั้งค่า PIN ล็อกแอปสำหรับผู้ใช้นี้
+        // แก้ไขระบบตรวจสอบพินในช่วงเซสชันผู้ใช้อย่างถูกต้องและแม่นยำ
         const pinKey = 'finsave_pin_' + appState.currentUser.username;
         const savedPin = localStorage.getItem(pinKey);
         
@@ -1030,6 +1034,7 @@
       }
     }
 
+    // ตรวจสอบความถูกต้องและเปรียบเทียบพินถาวรสำหรับการเข้าระบบ
     function verifyPin() {
       if (!appState.currentUser) return;
       const pinKey = 'finsave_pin_' + appState.currentUser.username;
@@ -1041,7 +1046,7 @@
         showToast("ยินดีต้อนรับเข้าใช้งาน FinsavePro+", true);
         syncData();
       } else {
-        showToast("รหัส PIN ไม่ถูกต้อง กรุณากรอกใหม่อีกครั้ง", false);
+        showToast("รหัส PIN ล็อกแอปไม่ถูกต้อง กรุณากรอกใหม่อีกครั้ง", false);
         clearPin();
       }
     }
@@ -1622,6 +1627,7 @@
       }
     }
 
+    // กรอกจำนวนเงินรวดเร็ว
     function quickFillAmount(val) {
       document.getElementById('transAmount').value = val;
     }
@@ -1904,211 +1910,82 @@
       }
     }
 
-    function handleCreateGoal(e) {
-      e.preventDefault();
-      const name = document.getElementById('goalName').value.trim();
-      const target = parseFloat(document.getElementById('goalTarget').value);
+    // ================= AI CHAT Finsave 2.0 ENGINE =================
+    function handleAiChatSubmit(e) {
+      if (e) e.preventDefault();
+      const inputEl = document.getElementById('aiChatInput');
+      const text = inputEl.value.trim();
+      if (!text) return;
 
-      if (isNaN(target) || target <= 0) {
-        showToast("กรุณากรอกเงินเป้าหมายที่ถูกต้อง", false);
-        return;
-      }
+      appendChatMessage(text, 'user');
+      inputEl.value = "";
 
-      const newGoal = {
-        id: 'G' + Date.now(),
-        name,
-        target,
-        current: 0,
-        status: 'active'
-      };
-
-      appState.goals.push(newGoal);
-      localStorage.setItem('finsave_backup_' + appState.currentUser.username, JSON.stringify(appState));
-      updateUIRender();
-      showToast("สร้างสัดส่วนเป้าหมายออมเงินแยกสำเร็จเรียบร้อย!", true);
-      document.getElementById('goalName').value = "";
-      document.getElementById('goalTarget').value = "";
-
-      sendDataToServer('addGoal', newGoal)
-        .catch(() => {
-          console.warn("ไม่สามารถส่งข้อมูลเป้าหมายเข้าคลาวด์ได้ขณะนี้");
-        });
+      // ประมวลผลคำตอบจาก AI
+      setTimeout(() => {
+        const responseText = generateAiResponse(text);
+        appendChatMessage(responseText, 'bot');
+      }, 400);
     }
 
-    async function deleteGoal(id) {
-      const confirmed = await showCustomConfirm(
-        "ยืนยันการลบเป้าหมายการเงิน", 
-        "คุณต้องการยกเลิกและลบสัดส่วนเป้าหมายการเงินรายการนี้ใช่หรือไม่?"
-      );
-      if (!confirmed) return;
-
-      appState.goals = appState.goals.filter(g => g.id !== id);
-      localStorage.setItem('finsave_backup_' + appState.currentUser.username, JSON.stringify(appState));
-      updateUIRender();
-      showToast("ลบเป้าหมายจัดสรรออกเรียบร้อยแล้ว", true);
-
-      sendDataToServer('deleteGoal', { id })
-        .catch(() => {
-          console.warn("ไม่สามารถซิงค์ลบข้อมูลเป้าหมายขึ้นเซิร์ฟเวอร์หลัก");
-        });
+    function sendQuickAiQuery(query) {
+      appendChatMessage(query, 'user');
+      setTimeout(() => {
+        const responseText = generateAiResponse(query);
+        appendChatMessage(responseText, 'bot');
+      }, 400);
     }
 
-    function openGoalModal(id) {
-      currentModalGoalId = id;
-      const g = appState.goals.find(x => x.id === id);
-      if (!g) return;
-      
-      document.getElementById('goalModalTitle').innerText = `ปรับยอดเป้าหมาย: ${g.name}`;
-      document.getElementById('goalModalAmount').value = "";
-      setModalAction('add');
-      
-      document.getElementById('goalModal').classList.remove('hidden');
-    }
-
-    function closeGoalModal() {
-      document.getElementById('goalModal').classList.add('hidden');
-    }
-
-    function setModalAction(action) {
-      modalAction = action;
-      const btnAdd = document.getElementById('btn-modal-add');
-      const btnRemove = document.getElementById('btn-modal-remove');
-
-      if (action === 'add') {
-        btnAdd.className = "flex-1 py-1.5 text-center text-xs font-bold rounded-lg btn-smooth bg-white dark:bg-slate-900 text-brand-600 shadow-sm";
-        btnRemove.className = "flex-1 py-1.5 text-center text-xs font-bold rounded-lg btn-smooth text-slate-500 hover:text-slate-700";
-      } else {
-        btnRemove.className = "flex-1 py-1.5 text-center text-xs font-bold rounded-lg btn-smooth bg-white dark:bg-slate-900 text-rose-600 shadow-sm";
-        btnAdd.className = "flex-1 py-1.5 text-center text-xs font-bold rounded-lg btn-smooth text-slate-500 hover:text-slate-700";
-      }
-    }
-
-    // ระบบเพิ่มลดเงินแยกสำหรับเป้าหมาย ไม่ให้ไปหักหรือคิดรวมกับเงินออมสะสมหลักอย่างเด็ดขาด
-    function submitGoalAdjustment() {
-      const amount = parseFloat(document.getElementById('goalModalAmount').value);
-      if (isNaN(amount) || amount <= 0) {
-        showToast("กรุณากรอกจำนวนเงินให้ถูกต้อง", false);
-        return;
-      }
-
-      const idx = appState.goals.findIndex(g => g.id === currentModalGoalId);
-      if (idx === -1) return;
-
-      const oldObj = appState.goals[idx];
-      let newCurrent = oldObj.current;
-
-      if (modalAction === 'add') {
-        newCurrent += amount;
-      } else {
-        newCurrent = Math.max(0, newCurrent - amount);
-      }
-
-      let updatedStatus = oldObj.status;
-      if (newCurrent >= oldObj.target) {
-        newCurrent = oldObj.target;
-        updatedStatus = 'completed'; // สำเร็จสมบูรณ์ครบ 100% ย้ายไปเป้าหมายสำเร็จอัตโนมัติ
-      }
-
-      const updatedPayload = {
-        ...oldObj,
-        current: newCurrent,
-        status: updatedStatus
-      };
-
-      appState.goals[idx] = updatedPayload;
-      localStorage.setItem('finsave_backup_' + appState.currentUser.username, JSON.stringify(appState));
-      updateUIRender();
-      closeGoalModal();
-      
-      if (updatedStatus === 'completed') {
-        showToast(`🎉 ยินดีด้วย! คุณสะสมเป้าหมายความสำเร็จ "${oldObj.name}" ครบ 100% สำเร็จแล้ว!`, true);
-      } else {
-        showToast("ปรับปรุงยอดส่วนจัดสรรเป้าหมายสำเร็จแล้ว", true);
-      }
-
-      sendDataToServer('updateGoal', updatedPayload)
-        .catch(() => {
-          console.warn("ไม่สามารถอัปโหลดข้อมูลเป้าหมายใหม่ขึ้นคลาวด์ขณะนี้");
-        });
-    }
-
-    // ================= RANKS ENGINE (คำนวณระดับยศเกียรติยศ) =================
-    function renderRanks() {
-      let rawSavingsSumVal = rawSavingsSum();
-
-      let userRank = RANKS[0];
-      let nextRank = null;
-
-      for (let i = 0; i < RANKS.length; i++) {
-        if (rawSavingsSumVal >= RANKS[i].min) {
-          userRank = RANKS[i];
-          nextRank = RANKS[i + 1] || null;
-        } else {
-          break;
-        }
-      }
-
-      const currentRankTitleEl = document.getElementById('currentRankTitle');
-      if (currentRankTitleEl) currentRankTitleEl.innerText = userRank.title;
-      
-      const rankBadgeIconEl = document.getElementById('rankBadgeIcon');
-      const rankBadgeContainer = document.getElementById('rankBadgeContainer');
-      if (rankBadgeIconEl && rankBadgeContainer) {
-        rankBadgeIconEl.innerText = userRank.icon;
-        rankBadgeContainer.className = `w-16 h-16 rounded-2xl bg-gradient-to-tr ${userRank.color} flex items-center justify-center text-white shadow-lg animate-bounce`;
-      }
-
-      const rankProgressTextEl = document.getElementById('rankProgressText');
-      const rankProgressBarEl = document.getElementById('rankProgressBar');
-
-      if (nextRank) {
-        const requiredAmount = nextRank.min;
-        const currentProgress = rawSavingsSumVal;
-        const percent = Math.min(Math.round((currentProgress / requiredAmount) * 100), 100);
-        
-        if (rankProgressTextEl) rankProgressTextEl.innerText = `สะสม: ฿${currentProgress.toLocaleString()} / ฿${requiredAmount.toLocaleString()}`;
-        if (rankProgressBarEl) rankProgressBarEl.style.width = `${percent}%`;
-      } else {
-        if (rankProgressTextEl) rankProgressTextEl.innerText = `คุณเป็นตำนานผู้พิชิตยศระดับเกียรติยศสูงสุดของระบบแล้ว!`;
-        if (rankProgressBarEl) rankProgressBarEl.style.width = `100%`;
-      }
-
-      const container = document.getElementById('ranksListContainer');
+    function appendChatMessage(text, sender) {
+      const container = document.getElementById('aiChatMessages');
       if (!container) return;
-      container.innerHTML = "";
 
-      RANKS.forEach(r => {
-        const isEarned = rawSavingsSumVal >= r.min;
-        const rankCard = document.createElement('div');
-        rankCard.className = `p-3 rounded-2xl flex items-center justify-between transition-all ${
-          isEarned 
-            ? 'bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800' 
-            : 'opacity-40 border border-dashed border-slate-200 dark:border-slate-800'
-        }`;
+      const msgEl = document.createElement('div');
+      msgEl.className = sender === 'user' ? 'flex items-start gap-2 justify-end' : 'flex items-start gap-2 max-w-[85%]';
+      
+      const botAvatar = `<div class="w-7 h-7 rounded-lg bg-indigo-500 text-white flex items-center justify-center shrink-0">
+                          <span class="material-symbols-rounded text-sm">smart_toy</span>
+                        </div>`;
+      
+      const messageBubble = sender === 'user' 
+        ? `<div class="bg-purple-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] leading-relaxed">${text}</div>`
+        : `<div class="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 p-3 rounded-2xl rounded-tl-none leading-relaxed">${text}</div>`;
 
-        rankCard.innerHTML = `
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-rounded text-2xl ${isEarned ? r.color : 'text-slate-400'}">${r.icon}</span>
-            <div>
-              <span class="text-xs font-bold block ${isEarned ? 'text-slate-800 dark:text-slate-100' : 'text-slate-500'}">${r.title}</span>
-              <span class="text-[10px] text-slate-400 block">${r.desc}</span>
-            </div>
-          </div>
-          <div class="text-right">
-            <span class="text-[10px] font-bold font-mono block ${isEarned ? 'text-brand-500' : 'text-slate-400'}">฿${r.min.toLocaleString()}+</span>
-            ${isEarned ? '<span class="text-[9px] font-bold text-brand-600 bg-brand-50 dark:bg-brand-950/40 px-1.5 py-0.5 rounded">สำเร็จแล้ว</span>' : '<span class="text-[9px] text-slate-400">ยังไม่ถึง</span>'}
-          </div>
-        `;
-        container.appendChild(rankCard);
-      });
-
-      const labelStatus = document.getElementById('profileLabelStatus');
-      if (labelStatus) {
-        labelStatus.innerHTML = `ยศเกียรติยศสะสม: <b class="text-brand-500 font-bold">${userRank.title}</b>`;
-      }
+      msgEl.innerHTML = sender === 'user' ? messageBubble : (botAvatar + messageBubble);
+      container.appendChild(msgEl);
+      container.scrollTop = container.scrollHeight;
     }
 
-    // ฟังก์ชันคำนวณยอดออมดิบรวมเพื่อใช้งานใน AI Chat และ Ranks
+    // สมองจำลอง AI Finsave 2.0
+    function generateAiResponse(query) {
+      const q = query.toLowerCase();
+      let incomeSum = rawSavingsSum();
+
+      if (q.includes('วิเคราะห์') || q.includes('ยอดออม') || q.includes('เงินออม')) {
+        return `จากการวิเคราะห์พอร์ตออมของท่านในระบบ FinsavePro+ ขณะนี้ยอดเงินออมสะสมรวมของท่านอยู่ที่ <b class="text-brand-500">฿${incomeSum.toLocaleString()}</b> โดยมีรายการบันทึกทั้งหมด <b class="text-indigo-500">${appState.savings.length} ครั้ง</b> ถือว่าอยู่ในเกณฑ์ที่ดีมากครับ! ท่านสามารถไปฝากเพิ่มในส่วนของเป้าหมายการออมเพื่อแบ่งจัดสรรการออมอย่างรัดกุมมากยิ่งขึ้นนะครับ`;
+      }
+
+      if (q.includes('คู่มือ') || q.includes('แนะนำ') || q.includes('วิธีใช้') || q.includes('ใช้ระบบ')) {
+        return `📖 <b>คู่มือการใช้งานระบบ FinsavePro+ อย่างละเอียด:</b><br><br>
+                1. <b>การบันทึกยอดเงินออม:</b> เข้าเมนู "บันทึก" ด้านล่าง กรอกจำนวนเงินออมและรายละเอียดความทรงจำในการออม และกดตกลงเพื่อบันทึก ยอดเงินสะสมหลักของคุณจะอัปเดตแบบเรียลไทม์<br>
+                2. <b>เป้าหมายการออมแยกส่วน:</b> เข้าสู่เมนู "อื่นๆ" เลือก "เป้าหมายการออม" เพื่อตั้งเป้าหมายออมแยกส่วนไม่กระทบยอดรวม สามารถปรับฝาก/ถอนได้อย่างอิสระเมื่อถึง 100% จะย้ายเข้าสู่เป้าหมายสำเร็จอัตโนมัติ<br>
+                3. <b>การจัดเกียรติยศ (ยศการออม):</b> ยอดเงินออมรวมดิบของท่านจะเป็นตัววิเคราะห์และเลื่อนอันดับยศให้โดยอัตโนมัติ<br>
+                4. <b>ระบบรายการโปรด:</b> แตะปุ่ม "+" บน Dashboard เพื่อตั้งค่าปักหมุดเมนูที่ท่านใช้งานบ่อยมาไว้ที่หน้าแดชบอร์ดลัดเพื่อความรวดเร็วครับ`;
+      }
+
+      if (q.includes('ยศ') || q.includes('ระดับ') || q.includes('ranks')) {
+        let userRank = RANKS[0];
+        for (let i = 0; i < RANKS.length; i++) {
+          if (incomeSum >= RANKS[i].min) {
+            userRank = RANKS[i];
+          }
+        }
+        return `🎖️ <b>เกียรติยศวินัยการเงินปัจจุบันของท่าน:</b><br>
+                ขณะนี้ท่านครองระดับยศเป็น <b>"${userRank.title}"</b> (ยอดออมสะสมรวมดิบ ฿${incomeSum.toLocaleString()}) ซึ่งระดับความก้าวหน้าของท่านจะเติบโตขึ้นทุกครั้งเมื่อมียอดฝากเงินออมสะสมเพิ่มขึ้นครับ รักษาวินัยต่อไปเพื่อบรรลุระดับ Galactic Legend นะครับ!`;
+      }
+
+      return `ขอบคุณสำหรับคำถามครับ! เกี่ยวกับเรื่อง "${query}" นั้น ในระบบ FinsavePro+ อัปเดตใหม่ล่าสุด ท่านสามารถเลือกปักหมุดรายการโปรดเพื่อใช้งานด่วน หรือคุยถามผมเกี่ยวกับ "วิเคราะห์การออมของฉัน", "ระดับยศการออมเงิน" หรือ "คู่มือการใช้งานระบบอย่างละเอียด" ได้ทันทีครับ!`;
+    }
+
     function rawSavingsSum() {
       let sum = 0;
       appState.savings.forEach(item => {
